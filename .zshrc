@@ -2,8 +2,9 @@
 export ZSH="/Users/proton/.oh-my-zsh"
 
 # Set name of the zsh theme.
-ZSH_THEME="avit"
-
+ZSH_THEME="spaceship"
+SPACESHIP_BATTERY_SHOW="false"
+SPACESHIP_USER_SHOW="false"
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -64,3 +65,6 @@ export PIPENV_VENV_IN_PROJECT=1
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 
+
+
+source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
