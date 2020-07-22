@@ -5,6 +5,8 @@ export ZSH="/Users/proton/.oh-my-zsh"
 ZSH_THEME="spaceship"
 SPACESHIP_BATTERY_SHOW="false"
 SPACESHIP_USER_SHOW="false"
+source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -16,7 +18,7 @@ SPACESHIP_USER_SHOW="false"
 # DISABLE_MAGIC_FUNCTIONS=true
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -62,9 +64,24 @@ fi
 # Creates a virtual env in the project
 export PIPENV_VENV_IN_PROJECT=1
 
+# Haskell Compiler Setup
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 
 
 
-source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/proton/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/proton/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/proton/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
