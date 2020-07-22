@@ -5,6 +5,24 @@ export ZSH="/Users/proton/.oh-my-zsh"
 ZSH_THEME="spaceship"
 SPACESHIP_BATTERY_SHOW="false"
 SPACESHIP_USER_SHOW="false"
+SPACESHIP_PROMPT_ORDER=(
+  time          # Time stamps section
+  user          # Username section
+  dir           # Current directory section
+  host          # Hostname section
+  git           # Git section (git_branch + git_status)
+  package       # Package version
+  node          # Node.js section
+  docker        # Docker section
+  aws           # Amazon Web Services section
+  venv          # virtualenv section
+  conda         # conda virtualenv section
+  exec_time     # Execution time
+  line_sep      # Line break
+  vi_mode       # Vi-mode indicator
+  jobs          # Background jobs indicator
+  char          # Prompt character
+)
 source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
 
 # Uncomment the following line to use case-sensitive completion.
