@@ -44,6 +44,9 @@ source $ZSH/oh-my-zsh.sh
 
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
+export TERM="xterm-256color"
+
+unsetopt BEEP
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -87,3 +90,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --info=inline --border"
+export FZF_DEFAULT_COMMAND="rg --files --hidden"
