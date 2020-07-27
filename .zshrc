@@ -25,16 +25,6 @@ SPACESHIP_PROMPT_ORDER=(
 )
 source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
@@ -48,22 +38,19 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git docker)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
+export EDITOR="nvim"
+export VISUAL="$EDITOR"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-export EDITOR="code --wait"
 
-export LESS="-F -X $LESS"
 
 # Aliases
-alias gst="git status"
-alias glog="git log --oneline"
 alias rm="rm -i"
 alias diff="diff -u"
 
@@ -84,9 +71,6 @@ export PIPENV_VENV_IN_PROJECT=1
 
 # Haskell Compiler Setup
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-
-
-
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
