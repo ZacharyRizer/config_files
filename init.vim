@@ -23,7 +23,8 @@ set shortmess+=c                        " Don't pass messages to |ins-completion
 set updatetime=100                      " Faster completion
 set timeoutlen=100                      " By default timeoutlen is 1000 ms
 set clipboard=unnamedplus               " Copy paste between vim and everything else
-set incsearch smartcase hlsearch        " more intelligent search
+set incsearch ignorecase smartcase      " more intelligent search
+set noshowmode                          " Airline takes care of showing modes
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=lightgrey
@@ -87,7 +88,7 @@ nnoremap <leader>l :wincmd l<CR>
 if (has("autocmd") && !has("gui_running"))
   augroup colorset
     autocmd!
-    let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
+    let s:white = { "gui": "#D5D8DF", "cterm": "145", "cterm16" : "7" }
     autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
   augroup END
 endif
@@ -106,10 +107,6 @@ colorscheme onedark
 
 " enable tabline
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-let g:airline#extensions#tabline#right_sep = ''
-let g:airline#extensions#tabline#right_alt_sep = ''
 
 " Switch to your current theme
 let g:airline_theme = 'onedark'
