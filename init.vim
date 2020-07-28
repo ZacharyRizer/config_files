@@ -1,162 +1,115 @@
-syntax on
+" -----------------------------------------------------------------------------
+" -------------------------- General Settings ---------------------------------
+" -----------------------------------------------------------------------------
+  
+
+syntax enable                           " Enables syntax highlighing
+set noerrorbells                        " Stop those annoying bells
+set hidden                              " Required to keep multiple buffers open multiple buffers
+set nowrap                              " Display long lines as just one line
+set cmdheight=2                         " More space for displaying messages
+set mouse=a                             " Enable your mouse
+set splitbelow splitright               " Splits will automatically be below and to the right
+set tabstop=4 softtabstop=4             " Insert 4 spaces for a tab
+set shiftwidth=4                        " Change the number of space characters inserted for indentation
+set smarttab                            " Makes tabbing smarter will realize you have 2 vs 4
+set expandtab                           " Converts tabs to spaces
+set smartindent                         " Makes indenting smart
+set number relativenumber               " Line numbers
+set background=dark                     " tell vim what the background color looks like
+set showtabline=2                       " Always show tabs 
+set nobackup nowritebackup noswapfile   " This is recommended by coc
+set shortmess+=c                        " Don't pass messages to |ins-completion-menu|.
+set updatetime=100                      " Faster completion
+set timeoutlen=100                      " By default timeoutlen is 1000 ms
+set clipboard=unnamedplus               " Copy paste between vim and everything else
+set incsearch smartcase hlsearch        " more intelligent search
 
 set colorcolumn=80
-set cmdheight=2 " Give more space for displaying messages.
-set expandtab
-set hlsearch
-set hidden
-set ignorecase
-set incsearch
-set noerrorbells
-set nobackup
-set noswapfile
-set nowrap
-set nu relativenumber
-set scrolloff=8
-set shiftwidth=4
-set shortmess+=c " Don't pass messages to : ins-completion-menu :
-set smartcase
-set smartindent
-set tabstop=4 softtabstop=4
-set undodir=~/.vim/undodir
-set undofile
-set updatetime=100 " shorter updatetime for smoother UI
-
 highlight ColorColumn ctermbg=0 guibg=lightgrey
+
+
+" -----------------------------------------------------------------------------
+" ------------------------------ Plug-Ins -------------------------------------
+" -----------------------------------------------------------------------------
+
 
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'tweekmonster/gofmt.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'vim-utils/vim-man'
-Plug 'mbbill/undotree'
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'ThePrimeagen/vim-be-good', {'do': './install.sh'}
-Plug 'preservim/nerdtree'
-Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'scrooloose/nerdcommenter'
 
-Plug 'gruvbox-community/gruvbox'
-Plug 'joshdick/onedark.vim'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'joshdick/onedark.vim'
 
 call plug#end()
 
-" --- vim go (polyglot) settings.
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_types = 1
-let g:go_highlight_function_parameters = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_generate_tags = 1
-let g:go_highlight_format_strings = 1
-let g:go_highlight_variable_declarations = 1
-let g:go_auto_sameids = 1
 
-" color scheme settings
-if (has('termguicolors'))
-  set termguicolors
-endif
-colorscheme onedark
-highlight Normal guibg=#1c1f20 ctermbg=black
-let g:airline_theme='onedark'
+" -----------------------------------------------------------------------------
+" -------------------------- Basic Key Mappings -------------------------------
+" -----------------------------------------------------------------------------
 
-if executable('rg')
-    let g:rg_derive_root='true'
-endif
 
-let loaded_matchparen = 1
-let mapleader = " "
+" set leader key
+let g:mapleader = " "
 
-let g:netrw_browse_split = 2
-let g:netrw_banner = 0
-let g:netrw_winsize = 25
-
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
-let $FZF_DEFAULT_OPTS='--reverse'
-let $FZF_DEFAULT_COMMAND="rg --files --hidden"
-
+" Shift-y like D and C <==> C-L to clear hlsearch <==> C-c for ESC
 map Y y$
-" Map <C-L> (redraw screen) to also turn off search highlighting search
 nnoremap <C-L> :nohl<CR><C-L>
+inoremap <C-c> <Esc>
+
+" TAB and Shift TAB to cycle buffers
+nnoremap <TAB> :bnext<CR>
+nnoremap <S-TAB> :bprevious<CR>
+
+" Better tabbing
+vnoremap < <gv
+vnoremap > >gv
+
+" better window management
+nnoremap <Leader>= :vertical resize +25<CR>
+nnoremap <Leader>- :vertical resize -25<CR>
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
-nnoremap <leader>u :UndotreeShow<CR>
-nnoremap <C-p> :GFiles<CR>
-nnoremap <Leader>f :Files<CR>
 
-let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeQuitOnOpen = 1
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-vmap ++ <plug>NERDCommenterToggle
-nmap ++ <plug>NERDCommenterToggle
-nnoremap <leader>t :NERDTreeToggle<CR>
-nnoremap <silent> <leader>T :NERDTreeFind<CR>
 
-inoremap <C-c> <esc>
+" -----------------------------------------------------------------------------
+" ----------------------------- Theme Config ----------------------------------
+" -----------------------------------------------------------------------------
 
-fun! TrimWhitespace()
-    let l:save = winsaveview()
-    keeppatterns %s/\s\+$//e
-    call winrestview(l:save)
-endfun
 
-augroup highlight_yank
+" onedark.vim override: Don't set a background color when running in a terminal;
+if (has("autocmd") && !has("gui_running"))
+  augroup colorset
     autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 50)
-augroup END
+    let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
+    autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
+  augroup END
+endif
 
-autocmd BufWritePre * :call TrimWhitespace()
+" checks if your terminal has 24-bit color support
+if (has("termguicolors"))
+    set termguicolors
+endif
 
-" Coc related commands
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+hi Comment cterm=italic
+let g:onedark_hide_endofbuffer=1
+let g:onedark_terminal_italics=1
+let g:onedark_termcolors=256
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+colorscheme onedark 
 
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-inoremap <silent><expr> <C-space> coc#refresh()
+" enable tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 
-" GoTo code navigation.
-nmap <leader>gd <Plug>(coc-definition)
-nmap <leader>gy <Plug>(coc-type-definition)
-nmap <leader>gi <Plug>(coc-implementation)
-nmap <leader>gr <Plug>(coc-references)
-nmap <leader>rr <Plug>(coc-rename)
-nmap <leader>g[ <Plug>(coc-diagnostic-prev)
-nmap <leader>g] <Plug>(coc-diagnostic-next)
-nmap <silent> <leader>gp <Plug>(coc-diagnostic-prev-error)
-nmap <silent> <leader>gn <Plug>(coc-diagnostic-next-error)
-nnoremap <leader>cr :CocRestart
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
+" Switch to your current theme
+let g:airline_theme = 'onedark'
