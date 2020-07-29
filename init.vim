@@ -42,6 +42,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
+Plug 'tpope/vim-commentary'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -70,6 +71,10 @@ nnoremap <Leader>w  :bd<CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" Easy comments
+nnoremap <space>/ :Commentary<CR> 
+vnoremap <space>/ :Commentary<CR> gv
+
 " better window management
 nnoremap <M-l> :vertical resize +25<CR>
 nnoremap <M-h> :vertical resize -25<CR>
@@ -81,9 +86,9 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 
 " FZF key maps -- ripgrep : fzf : fzf~ 
-nnoremap <leader>f  :Rg<CR>
-nnoremap <leader>p  :FZF<CR>
-nnoremap <leader>ph :FZF~<CR>
+nnoremap <leader>g  :Rg<CR>
+nnoremap <leader>f  :FZF<CR>
+nnoremap <leader>fh :FZF~<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
 " -----------------------------------------------------------------------------
@@ -111,11 +116,12 @@ let g:onedark_termcolors=256
 
 colorscheme onedark 
 
-" enable tabline
+" vim-airline tab and theme config
 let g:airline#extensions#tabline#enabled = 1
-
-" Switch to your current theme
 let g:airline_theme = 'onedark'
 
+" -----------------------------------------------------------------------------
+" ------------------------------ COC Config -----------------------------------
+" -----------------------------------------------------------------------------
 
 
