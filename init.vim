@@ -2,7 +2,6 @@
 " -------------------------- General Settings ---------------------------------
 " -----------------------------------------------------------------------------
   
-
 syntax enable                           " Enables syntax highlighing
 set noerrorbells                        " Stop those annoying bells
 set hidden                              " Required to keep multiple buffers open multiple buffers
@@ -25,15 +24,16 @@ set timeoutlen=100                      " By default timeoutlen is 1000 ms
 set clipboard=unnamedplus               " Copy paste between vim and everything else
 set incsearch ignorecase smartcase      " more intelligent search
 set noshowmode                          " Airline takes care of showing modes
-
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=lightgrey
-
+" Tab completion for command mode
+set wildmenu 
+set wildignorecase
+set wildmode=longest:full
 
 " -----------------------------------------------------------------------------
 " ------------------------------ Plug-Ins -------------------------------------
 " -----------------------------------------------------------------------------
-
 
 call plug#begin('~/.vim/plugged')
 
@@ -41,6 +41,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-rooter'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -48,11 +49,9 @@ Plug 'joshdick/onedark.vim'
 
 call plug#end()
 
-
 " -----------------------------------------------------------------------------
 " -------------------------- Basic Key Mappings -------------------------------
 " -----------------------------------------------------------------------------
-
 
 " set leader key
 let g:mapleader = " "
@@ -63,26 +62,33 @@ nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
 
 " TAB and Shift TAB to cycle buffers
-nnoremap <TAB> :bnext<CR>
-nnoremap <S-TAB> :bprevious<CR>
+nnoremap <TAB>      :bnext<CR>
+nnoremap <S-TAB>    :bprevious<CR>
+nnoremap <Leader>w  :bd<CR>
 
 " Better tabbing
 vnoremap < <gv
 vnoremap > >gv
 
 " better window management
-nnoremap <Leader>= :vertical resize +25<CR>
-nnoremap <Leader>- :vertical resize -25<CR>
+nnoremap <M-l> :vertical resize +25<CR>
+nnoremap <M-h> :vertical resize -25<CR>
+nnoremap <M-k> :resize +10<CR>
+nnoremap <M-j> :resize -10<CR>
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 
+" FZF key maps -- ripgrep : fzf : fzf~ 
+nnoremap <leader>f  :Rg<CR>
+nnoremap <leader>p  :FZF<CR>
+nnoremap <leader>ph :FZF~<CR>
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
 " -----------------------------------------------------------------------------
 " ----------------------------- Theme Config ----------------------------------
 " -----------------------------------------------------------------------------
-
 
 " onedark.vim override: Don't set a background color when running in a terminal;
 if (has("autocmd") && !has("gui_running"))
@@ -110,3 +116,6 @@ let g:airline#extensions#tabline#enabled = 1
 
 " Switch to your current theme
 let g:airline_theme = 'onedark'
+
+
+
