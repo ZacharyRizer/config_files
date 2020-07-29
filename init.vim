@@ -49,6 +49,7 @@ Plug 'airblade/vim-rooter'
 Plug 'francoiscabrol/ranger.vim' 
 Plug 'rbgrouleff/bclose.vim'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
 Plug 'vim-airline/vim-airline'
@@ -95,14 +96,14 @@ nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 
 " FZF key maps -- ripgrep : fzf : fzf~ 
-nnoremap <leader>g  :Rg<CR>
 nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
+nnoremap <leader>fg  :Rg<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
 " Ranger config - make ranger replace netrw and toggle explorer with E
 let g:ranger_map_keys = 0
-map <leader>e :Ranger<CR>
+map <leader>r :Ranger<CR>
 let g:ranger_replace_netrw = 1
 
 

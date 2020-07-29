@@ -54,9 +54,10 @@ export NVM_DIR="$HOME/.nvm"
 
 
 # Aliases
-alias rm="rm -i"
 alias diff="diff -u"
 alias g++="g++ -std=c++17"
+alias rm="rm -i"
+alias r="ranger"
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
