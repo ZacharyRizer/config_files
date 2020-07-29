@@ -56,10 +56,10 @@ export NVM_DIR="$HOME/.nvm"
 # Aliases
 alias rm="rm -i"
 alias diff="diff -u"
+alias g++="g++ -std=c++17"
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
-
 # Add pyenv executable directory to PATH
 export PATH="$PYENV_ROOT/bin:$PATH"
 
@@ -102,3 +102,4 @@ export FZF_DEFAULT_OPTS="
 "
 export FZF_DEFAULT_COMMAND="fd --hidden --exclude '.git' --exclude 'node_modules'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
