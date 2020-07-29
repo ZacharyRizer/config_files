@@ -2,6 +2,7 @@
 " -------------------------- General Settings ---------------------------------
 " -----------------------------------------------------------------------------
   
+
 syntax enable                           " Enables syntax highlighing
 set noerrorbells                        " Stop those annoying bells
 set hidden                              " Required to keep multiple buffers open multiple buffers
@@ -31,9 +32,11 @@ set wildmenu
 set wildignorecase
 set wildmode=longest:full
 
+
 " -----------------------------------------------------------------------------
 " ------------------------------ Plug-Ins -------------------------------------
 " -----------------------------------------------------------------------------
+
 
 call plug#begin('~/.vim/plugged')
 
@@ -50,9 +53,11 @@ Plug 'joshdick/onedark.vim'
 
 call plug#end()
 
+
 " -----------------------------------------------------------------------------
 " -------------------------- Basic Key Mappings -------------------------------
 " -----------------------------------------------------------------------------
+
 
 " set leader key
 let g:mapleader = " "
@@ -91,9 +96,11 @@ nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
+
 " -----------------------------------------------------------------------------
 " ----------------------------- Theme Config ----------------------------------
 " -----------------------------------------------------------------------------
+
 
 " onedark.vim override: Don't set a background color when running in a terminal;
 if (has("autocmd") && !has("gui_running"))
@@ -120,8 +127,60 @@ colorscheme onedark
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme = 'onedark'
 
+
 " -----------------------------------------------------------------------------
 " ------------------------------ COC Config -----------------------------------
 " -----------------------------------------------------------------------------
 
 
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use <cr> to confirm completion 
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" GoTo code navigation.
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gy <Plug>(coc-type-definition)
+nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gr <Plug>(coc-references)
+nmap <leader>rn <Plug>(coc-rename)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+
+" -----------------------------------------------------------------------------
+" <=== ------------- COC Extension Specific Commands --------------------- ===>
+" -----------------------------------------------------------------------------
+
+" Prettier command to format current buffer
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" coc-yank list
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
