@@ -92,5 +92,13 @@ unset __conda_setup
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --info=inline --border"
-export FZF_DEFAULT_COMMAND="rg --files --hidden"
+export FZF_DEFAULT_OPTS="
+--layout=reverse
+--info=inline
+--height=75%
+--multi
+--preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+--border
+"
+export FZF_DEFAULT_COMMAND="fd --hidden --exclude '.git' --exclude 'node_modules'"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
