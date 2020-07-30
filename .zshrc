@@ -1,7 +1,11 @@
+# --------------------------------------------------------------------------- #
+# ------------------------------ Oh My Zsh ---------------------------------- #
+# --------------------------------------------------------------------------- #
+
+
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/proton/.oh-my-zsh"
 
-# Set name of the zsh theme.
 ZSH_THEME="spaceship"
 SPACESHIP_BATTERY_SHOW="false"
 SPACESHIP_USER_SHOW="false"
@@ -25,19 +29,9 @@ SPACESHIP_PROMPT_ORDER=(
 )
 source "/Users/proton/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
+# disable marking untracked files under VCS as dirty
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(git docker)
 
 source $ZSH/oh-my-zsh.sh
@@ -91,7 +85,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-
+# FZF settings
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS="
 --layout=reverse
