@@ -1,32 +1,35 @@
 " --------------------------------------------------------------------------- "
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
-  
+
 
 syntax enable                             " Enables syntax highlighing
-set noerrorbells                          " Stop those annoying bells
-set hidden                                " Required to keep multiple buffers open multiple buffers
-set nowrap                                " Display long lines as just one line
-set cmdheight=2                           " More space for displaying messages
-set mouse=a                               " Enable your mouse
-set splitbelow splitright                 " Splits will automatically be below and to the right
-set tabstop=4 softtabstop=4               " Insert 4 spaces for a tab
-set shiftwidth=4                          " Change the number of space characters inserted for indentation
-set smarttab                              " Makes tabbing smarter will realize you have 2 vs 4
-set expandtab                             " Converts tabs to spaces
-set smartindent                           " Makes indenting smart
-set number relativenumber                 " Line numbers
+set autoindent                            " Makes indenting smart
 set background=dark                       " tell vim what the background color looks like
-set showtabline=2                         " Always show tabs 
-set nobackup nowritebackup noswapfile     " This is recommended by coc
-set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
-set updatetime=250                        " Faster completion
-set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
-set incsearch ignorecase smartcase        " more intelligent search
+set cmdheight=2                           " More space for displaying messages
+set expandtab                             " Converts tabs to spaces
+set hidden                                " Required to keep multiple buffers open multiple buffers
+set ignorecase incsearch smartcase        " more intelligent search
+set mouse=a                               " Enable your mouse
+set nobackup noswapfile                   " This is recommended by coc
+set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
+set nowrap                                " Display long lines as just one line
+set number relativenumber                 " Line numbers
+set shiftwidth=4                          " Change the number of space characters inserted for indentation
+set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
+set showtabline=2                         " Always show tabs/buffers above
+set signcolumn=yes                        " So COC diagnostics don't cause a column shift
+set softtabstop=4                         " Insert 4 spaces for a tab
+set splitbelow splitright                 " Splits will automatically be below and to the right
+set termguicolors                         " Enable 256 colors
+set timeoutlen=250                        " By default timeoutlen is 1000 ms
+set updatetime=250                        " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
-set colorcolumn=80                        " Show indicator at 80 chars
+
+" Show indicator at 80 chars
+set colorcolumn=80                        
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 " Help menu displays to the right
 autocmd! FileType help :wincmd L | :vert resize 80
@@ -50,7 +53,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
-Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline'          " theme related plugins
 Plug 'vim-airline/vim-airline-themes'
 Plug 'joshdick/onedark.vim'
 
@@ -119,11 +122,6 @@ if (has("autocmd") && !has("gui_running"))
   augroup END
 endif
 
-" checks if your terminal has 24-bit color support
-if (has("termguicolors"))
-    set termguicolors
-endif
-
 hi Comment cterm=italic
 let g:onedark_hide_endofbuffer=1
 let g:onedark_terminal_italics=1
@@ -142,10 +140,8 @@ let g:airline_theme = 'onedark'
 
 " Use <TAB> or <cr> to confirm completion
 if exists('*complete_info')
-  inoremap <expr> <TAB> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
   inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 else
-  inoremap <expr> <TAB> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 
@@ -181,5 +177,6 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Prettier command to format current buffer
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+inoremap <silent><expr> <C-space> coc#refresh()
 " coc-yank list
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
