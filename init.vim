@@ -1,4 +1,4 @@
-" --------------------------------------------------------------------------- "
+"  --------------------------------------------------------------------------- "
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
@@ -7,6 +7,7 @@ syntax enable                             " Enables syntax highlighing
 set autoindent                            " Makes indenting smart
 set background=dark                       " tell vim what the background color looks like
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
+set colorcolumn=80                        " Show indicator at 80 chars
 set cmdheight=2                           " More space for displaying messages
 set expandtab                             " Converts tabs to spaces
 set hidden                                " Required to keep multiple buffers open multiple buffers
@@ -28,9 +29,6 @@ set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set updatetime=250                        " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
-" Show indicator at 80 chars
-set colorcolumn=80                        
-highlight ColorColumn ctermbg=0 guibg=lightgrey
 " Help menu displays to the right
 autocmd! FileType help :wincmd L | :vert resize 80
 
@@ -49,6 +47,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter' 
 Plug 'francoiscabrol/ranger.vim' 
 Plug 'rbgrouleff/bclose.vim'            " ranger.vim necessary dependency
+Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
@@ -130,8 +129,9 @@ let g:onedark_termcolors=256
 colorscheme onedark 
 
 " vim-airline tab and theme config
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'onedark'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+let g:airline_theme='onedark'
 
 
 " --------------------------------------------------------------------------- "
@@ -151,7 +151,7 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent>gd <Plug>(coc-definition)
-nmap <silent>gy <Plug>(coc-type-definition)
+nmap <silent>gt <Plug>(coc-type-definition)
 nmap <silent>gi <Plug>(coc-implementation)
 nmap <silent>gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
@@ -166,17 +166,16 @@ function! s:show_documentation()
   endif
 endfunction
 
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
 
 " -----------------------------------------------------------------------------
 " <=== ------------- COC Extension Specific Commands --------------------- ===>
 " -----------------------------------------------------------------------------
 
 
-" Prettier command to format current buffer
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-inoremap <silent><expr> <C-space> coc#refresh()
 " coc-yank list
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+" coc-highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" coc-Prettier command to format current buffer
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+inoremap <silent><expr> <C-space> coc#refresh()
