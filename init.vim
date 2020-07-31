@@ -32,7 +32,6 @@ set wildignorecase wildmode=longest:full  " 'bash' like completion in command mo
 " Help menu displays to the right
 autocmd! FileType help :wincmd L | :vert resize 80
 
-
 " --------------------------------------------------------------------------- "
 " ------------------------------ Plug-Ins ----------------------------------- "
 " --------------------------------------------------------------------------- "
@@ -81,19 +80,23 @@ nnoremap <Leader>w  :bd<CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" Move line(s) up or down one line
+nnoremap <A-j> :m .+1<CR>
+nnoremap <A-k> :m .-2<CR>
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
 " Easy comments
 nnoremap <space>/ :Commentary<CR> 
 vnoremap <space>/ :Commentary<CR>
 
 " better window management
-nnoremap <M-l> :vertical resize +25<CR>
-nnoremap <M-h> :vertical resize -25<CR>
-nnoremap <M-k> :resize +10<CR>
-nnoremap <M-j> :resize -10<CR>
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>= :vertical resize +25<CR>
+nnoremap <leader>- :vertical resize -25<CR>
+nnoremap <leader>h  :wincmd h<CR>
+nnoremap <leader>j  :wincmd j<CR>
+nnoremap <leader>k  :wincmd k<CR>
+nnoremap <leader>l  :wincmd l<CR>
 
 " FZF key maps -- ripgrep : fzf : fzf~ 
 nnoremap <leader>f  :FZF<CR>
