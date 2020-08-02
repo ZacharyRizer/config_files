@@ -2,7 +2,6 @@
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
-
 syntax enable                             " Enables syntax highlighing
 set autoindent                            " Makes indenting smart
 set background=dark                       " tell vim what the background color looks like
@@ -22,6 +21,7 @@ set shiftwidth=4                          " Change the number of space character
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set showtabline=2                         " Always show tabs/buffers above
 set signcolumn=yes                        " So COC diagnostics don't cause a column shift
+set smarttab                              " Auto selects tab size based on surrounding tabs
 set softtabstop=4                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable 256 colors
@@ -31,18 +31,21 @@ set wildignorecase wildmode=longest:full  " 'bash' like completion in command mo
 
 " Help menu displays to the right
 autocmd! FileType help :wincmd L | :vert resize 80
+" Remove auot commentinging new line
+au BufEnter * set fo-=c fo-=r fo-=o
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ Plug-Ins ----------------------------------- "
 " --------------------------------------------------------------------------- "
 
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
+Plug 'honza/vim-snippets'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter' 
 Plug 'francoiscabrol/ranger.vim' 
 Plug 'rbgrouleff/bclose.vim'            " ranger.vim necessary dependency
@@ -57,11 +60,9 @@ Plug 'joshdick/onedark.vim'
 
 call plug#end()
 
-
 " --------------------------------------------------------------------------- "
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
-
 
 " set leader key
 let g:mapleader = " "
@@ -109,11 +110,9 @@ let g:ranger_map_keys = 0
 map <leader>r :Ranger<CR>
 let g:ranger_replace_netrw = 1
 
-
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "
 " --------------------------------------------------------------------------- "
-
 
 " onedark.vim override: Don't set a background color when running in a terminal;
 if (has("autocmd") && !has("gui_running"))
@@ -135,7 +134,6 @@ colorscheme onedark
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled=1
 let g:airline_theme='onedark'
-
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
@@ -169,16 +167,61 @@ function! s:show_documentation()
   endif
 endfunction
 
-
 " -----------------------------------------------------------------------------
 " <=== ------------- COC Extension Specific Commands --------------------- ===>
 " -----------------------------------------------------------------------------
 
-
-" coc-yank list
+" ==> coc-yank -- show yank list
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-" coc-highlight the symbol and its references when holding the cursor.
+
+" ==> coc-highlight 
 autocmd CursorHold * silent call CocActionAsync('highlight')
-" coc-Prettier command to format current buffer
+
+" ==> coc-Prettier command -- format on save 
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 inoremap <silent><expr> <C-space> coc#refresh()
+
+" ==> coc-snippets -- function like vscode snippets 
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+" -----------------------------------------------------------------------------
+" <=== ---------------------- Startify Config ---------------------------- ===>
+" -----------------------------------------------------------------------------
+
+" Session storage location
+let g:startify_session_dir = '~/.config/nvim/session'
+
+" structure of start screen
+let g:startify_lists = [
+            \ { 'type': 'files',     'header': ['   Files'] },
+            \ { 'type': 'dir',       'header': ['   Current Project Directory '. getcwd()] },
+            \ { 'type': 'sessions',  'header': ['   Sessions'] },
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks'] }
+            \ ]
+
+" few common files
+let g:startify_bookmarks = [
+            \ { 'c': '~/.config/nvim/coc-settings.json' },
+            \ { 'i': '~/.config/nvim/init.vim' },
+            \ { 'z': '~/.zshrc' }
+            \ ]
+
+" custom header
+let g:startify_custom_header = [
+            \ ' ______   ______     ______     ______   ______     __   __        ______   ______     ______     __  __    ',
+            \ '/\  == \ /\  == \   /\  __ \   /\__  _\ /\  __ \   /\ "-.\ \      /\  == \ /\  __ \   /\  ___\   /\ \/ /    ', 
+            \ '\ \  _-/ \ \  __<   \ \ \/\ \  \/_/\ \/ \ \ \/\ \  \ \ \-.  \     \ \  _-/ \ \  __ \  \ \ \____  \ \  _"-.  ',
+            \ ' \ \_\    \ \_\ \_\  \ \_____\    \ \_\  \ \_____\  \ \_\\"\_\     \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \_\ ',
+            \ '  \/_/     \/_/ /_/   \/_____/     \/_/   \/_____/   \/_/ \/_/      \/_/     \/_/\/_/   \/_____/   \/_/\/_/ '
+            \ ]
