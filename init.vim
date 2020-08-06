@@ -30,7 +30,7 @@ set updatetime=250                        " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
 " Help menu displays to the right
-autocmd! FileType help :wincmd L | :vert resize 80
+autocmd! FileType help :wincmd L | :vert resize 85 
 " Remove auot commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
@@ -71,6 +71,7 @@ let g:mapleader = " "
 map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
+tnoremap <Esc> <C-\><C-n>
 
 " TAB and Shift TAB to cycle buffers
 nnoremap <TAB>      :bnext<CR>
@@ -201,6 +202,8 @@ let g:coc_snippet_next = '<tab>'
 
 " Session storage location
 let g:startify_session_dir = '~/.config/nvim/session'
+" keybind to open startify
+nnoremap <leader><CR> :Startify<CR>
 
 " structure of start screen
 let g:startify_lists = [
