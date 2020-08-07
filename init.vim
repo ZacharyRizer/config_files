@@ -51,6 +51,7 @@ Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim'            " ranger.vim necessary dependency
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
@@ -74,10 +75,12 @@ inoremap <C-c> <Esc>
 
 " Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
-" run make with F5
-nnoremap <F5> :make<CR>
+" open terminal with leader-t in insert mode
+nnoremap <leader>t :terminal
+nnoremap <leader>tt :terminal<CR>
+autocmd TermOpen * startinsert
 
-" TAB and Shift TAB to cycle buffers
+" TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
 nnoremap <TAB>      :bnext<CR>
 nnoremap <S-TAB>    :bprevious<CR>
 nnoremap <Leader>w  :bd<CR>
@@ -86,23 +89,30 @@ nnoremap <Leader>w  :bd<CR>
 vnoremap < <gv
 vnoremap > >gv
 
-" Move line(s) up or down one line
-nnoremap <A-j> :m .+1<CR>
-nnoremap <A-k> :m .-2<CR>
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
 " Easy comments
 nnoremap <space>/ :Commentary<CR> 
 vnoremap <space>/ :Commentary<CR>
 
-" better window management
-nnoremap <leader>= :vertical resize +25<CR>
-nnoremap <leader>- :vertical resize -25<CR>
-nnoremap <leader>h  :wincmd h<CR>
-nnoremap <leader>j  :wincmd j<CR>
-nnoremap <leader>k  :wincmd k<CR>
-nnoremap <leader>l  :wincmd l<CR>
+" change windows from any mode
+tnoremap <A-h> <C-\><C-N><C-w>h
+tnoremap <A-j> <C-\><C-N><C-w>j 
+tnoremap <A-k> <C-\><C-N><C-w>k
+tnoremap <A-l> <C-\><C-N><C-w>l
+inoremap <A-h> <Esc><C-w>h
+inoremap <A-j> <Esc><C-w>j
+inoremap <A-k> <Esc><C-w>k
+inoremap <A-l> <Esc><C-w>l
+vnoremap <A-h> <Esc><C-w>h
+vnoremap <A-j> <Esc><C-w>j
+vnoremap <A-k> <Esc><C-w>k
+vnoremap <A-l> <Esc><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+" change window width 
+nnoremap <A-=> :vertical resize +25<CR>
+nnoremap <A--> :vertical resize -25<CR>
 
 " FZF key maps -- ripgrep : fzf : fzf~ 
 nnoremap <leader>f  :FZF<CR>
@@ -139,6 +149,7 @@ colorscheme onedark
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled=1
 let g:airline_theme='onedark'
+let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
