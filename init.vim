@@ -71,7 +71,11 @@ let g:mapleader = " "
 map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
+
+" Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
+" run make with F5
+nnoremap <F5> :make<CR>
 
 " TAB and Shift TAB to cycle buffers
 nnoremap <TAB>      :bnext<CR>
