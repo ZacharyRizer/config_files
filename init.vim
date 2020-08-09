@@ -76,8 +76,7 @@ inoremap <C-c> <Esc>
 " Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
 " open terminal with leader-t in insert mode
-nnoremap <leader>t :terminal
-nnoremap <leader>tt :terminal<CR>
+nnoremap <leader>t :terminal<CR>
 autocmd TermOpen * startinsert
 
 " TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
