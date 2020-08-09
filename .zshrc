@@ -57,6 +57,8 @@ alias r="ranger"
 export PATH="/usr/local/sbin:$PATH"
 # Add pyenv executable directory to PATH
 export PATH="$PYENV_ROOT/bin:$PATH"
+# Add cmake cli to path
+export PATH="/Applications/CMake.app/Contents/bin":"$PATH"
 
 # Initialize pyenv if it exists
 if command -v pyenv 1>/dev/null 2>&1
