@@ -73,14 +73,6 @@ map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
 
-" Terminal mode - Esc back to normal from insert
-tnoremap <Esc> <C-\><C-n>
-let g:floaterm_keymap_toggle = '<F1>'
-let g:floaterm_keymap_next   = '<F2>'
-let g:floaterm_keymap_prev   = '<F3>'
-let g:floaterm_keymap_new    = '<F4>'
-let g:floaterm_winblend=50
-
 " TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
 nnoremap <TAB>      :bnext<CR>
 nnoremap <S-TAB>    :bprevious<CR>
@@ -115,14 +107,29 @@ nnoremap <A-l> <C-w>l
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
 
-" FZF key maps -- ripgrep : fzf : fzf~ 
+" Terminal mode - Esc back to normal from insert
+tnoremap <Esc> <C-\><C-n>
+let g:floaterm_keymap_toggle = '<F1>'
+let g:floaterm_keymap_next   = '<F2>'
+let g:floaterm_keymap_prev   = '<F3>'
+let g:floaterm_keymap_new    = '<F4>'
+let g:floaterm_winblend=50
+let g:floaterm_height=0.8
+
+" FZF key maps --  fzf : fzf~ : ripgrep  
 nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
 nnoremap <leader>fg  :Rg<CR>
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
+let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
 
 " Ranger config - make ranger replace netrw and toggle explorer with E
 let g:rnvimr_ex_enable = 1
+let g:rnvimr_layout = { 'relative': 'editor',
+            \ 'width': float2nr(round(0.6 * &columns)),
+            \ 'height': float2nr(round(0.8 * &lines)),
+            \ 'col': float2nr(round(0.2 * &columns)),
+            \ 'row': float2nr(round(0.1 * &lines)),
+            \ 'style': 'minimal' }
 nmap <space>r :RnvimrToggle<CR>
 
 " --------------------------------------------------------------------------- "
