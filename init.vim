@@ -47,8 +47,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter' 
-Plug 'francoiscabrol/ranger.vim' 
-Plug 'rbgrouleff/bclose.vim'            " ranger.vim necessary dependency
+Plug 'kevinhwang91/rnvimr'
+Plug 'voldikss/vim-floaterm'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
@@ -75,9 +75,11 @@ inoremap <C-c> <Esc>
 
 " Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
-" open terminal with leader-t in insert mode
-nnoremap <leader>t :terminal<CR>
-autocmd TermOpen * startinsert
+let g:floaterm_keymap_toggle = '<F1>'
+let g:floaterm_keymap_next   = '<F2>'
+let g:floaterm_keymap_prev   = '<F3>'
+let g:floaterm_keymap_new    = '<F4>'
+let g:floaterm_winblend=60
 
 " TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
 nnoremap <TAB>      :bnext<CR>
@@ -97,7 +99,7 @@ tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j 
 tnoremap <A-k> <C-\><C-N><C-w>k
 tnoremap <A-l> <C-\><C-N><C-w>l
-inoremap <A-h> <Esc><C-w>h
+onoremap <A-h> <Esc><C-w>h
 inoremap <A-j> <Esc><C-w>j
 inoremap <A-k> <Esc><C-w>k
 inoremap <A-l> <Esc><C-w>l
@@ -120,9 +122,8 @@ nnoremap <leader>fg  :Rg<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
 " Ranger config - make ranger replace netrw and toggle explorer with E
-let g:ranger_map_keys = 0
-map <leader>r :Ranger<CR>
-let g:ranger_replace_netrw = 1
+let g:rnvimr_ex_enable = 1
+nmap <space>r :RnvimrToggle<CR>
 
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "

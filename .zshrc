@@ -52,6 +52,7 @@ alias diff="diff -u"
 alias g++="g++ -std=c++17"
 alias rm="rm -i"
 alias r="ranger"
+alias lg="lazygit"
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
