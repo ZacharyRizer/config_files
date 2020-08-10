@@ -26,6 +26,8 @@ set softtabstop=4                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable 256 colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
+set undodir=~/.vim/undodir                " Creates directory to store undos
+set undofile                              " Returns name of undo file
 set updatetime=250                        " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
@@ -46,6 +48,7 @@ Plug 'honza/vim-snippets'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
+Plug 'mbbill/undotree'
 Plug 'airblade/vim-rooter' 
 Plug 'kevinhwang91/rnvimr'
 Plug 'voldikss/vim-floaterm'
@@ -107,13 +110,15 @@ nnoremap <A-l> <C-w>l
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
 
+" Toggle undo tree
+nnoremap <leader>u :UndotreeToggle<CR>
+
 " Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
-let g:floaterm_keymap_toggle = '<F1>'
-let g:floaterm_keymap_next   = '<F2>'
-let g:floaterm_keymap_prev   = '<F3>'
-let g:floaterm_keymap_new    = '<F4>'
-let g:floaterm_winblend=50
+let g:floaterm_keymap_toggle = '<leader>t'
+let g:floaterm_keymap_next   = '<leader>tr'
+let g:floaterm_keymap_new    = '<leader>tn'
+let g:floaterm_keymap_kill   = '<leader>tk'
 let g:floaterm_height=0.8
 
 " FZF key maps --  fzf : fzf~ : ripgrep  
