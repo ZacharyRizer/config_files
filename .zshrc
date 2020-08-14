@@ -52,7 +52,8 @@ alias diff="diff -u"
 alias g++="g++ -std=c++17"
 alias rm="rm -i"
 alias r="ranger"
-alias lg="lazygit"
+alias lzg="lazygit"
+alias lzd="lazydocker"
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"

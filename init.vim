@@ -28,12 +28,12 @@ set termguicolors                         " Enable 256 colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
-set updatetime=250                        " Faster completion
+set updatetime=50                         " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
 " Help menu displays to the right
 autocmd! FileType help :wincmd L | :vert resize 85 
-" Remove auot commentinging new line
+" Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
 " --------------------------------------------------------------------------- "
@@ -42,17 +42,19 @@ au BufEnter * set fo-=c fo-=r fo-=o
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'honza/vim-snippets'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'airblade/vim-rooter' 
 Plug 'kevinhwang91/rnvimr'
 Plug 'voldikss/vim-floaterm'
 Plug 'jiangmiao/auto-pairs'
+" tpope is the best!
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-rsi'
@@ -79,7 +81,7 @@ inoremap <C-c> <Esc>
 " TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
 nnoremap <TAB>      :bnext<CR>
 nnoremap <S-TAB>    :bprevious<CR>
-nnoremap <Leader>w  :bd<CR>
+nnoremap <Leader>dd :bd<CR>
 
 " Better tabbing
 vnoremap < <gv
@@ -112,11 +114,14 @@ nnoremap <A--> :vertical resize -25<CR>
 
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
+let g:undotree_WindowLayout = 2
+let g:undotree_RelativeTimestamp = 0
+let g:undotree_SetFocusWhenToggle = 1
 
 " Terminal mode - Esc back to normal from insert
 tnoremap <Esc> <C-\><C-n>
-let g:floaterm_keymap_toggle = '<leader>t'
-let g:floaterm_keymap_next   = '<leader>tr'
+let g:floaterm_keymap_toggle = '<leader>tt'
+let g:floaterm_keymap_next   = '<leader>tr'     " think (tr) terminal-rotate
 let g:floaterm_keymap_new    = '<leader>tn'
 let g:floaterm_keymap_kill   = '<leader>tk'
 let g:floaterm_height=0.8
@@ -127,7 +132,7 @@ nnoremap <leader>fh :FZF~<CR>
 nnoremap <leader>fg  :Rg<CR>
 let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
 
-" Ranger config - make ranger replace netrw and toggle explorer with E
+" Ranger config - make ranger replace netrw and toggle with r
 let g:rnvimr_ex_enable = 1
 let g:rnvimr_layout = { 'relative': 'editor',
             \ 'width': float2nr(round(0.6 * &columns)),
@@ -135,7 +140,7 @@ let g:rnvimr_layout = { 'relative': 'editor',
             \ 'col': float2nr(round(0.2 * &columns)),
             \ 'row': float2nr(round(0.1 * &lines)),
             \ 'style': 'minimal' }
-nmap <space>r :RnvimrToggle<CR>
+nmap <leader>r :RnvimrToggle<CR>
 
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "
@@ -166,13 +171,6 @@ let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
 " --------------------------------------------------------------------------- "
-
-" Use <TAB> or <cr> to confirm completion
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
