@@ -46,7 +46,6 @@ Plug 'sheerun/vim-polyglot'
 Plug 'honza/vim-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
@@ -54,7 +53,6 @@ Plug 'mbbill/undotree'
 Plug 'kevinhwang91/rnvimr'
 Plug 'voldikss/vim-floaterm'
 Plug 'jiangmiao/auto-pairs'
-" tpope is the best!
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-rsi'
@@ -81,7 +79,6 @@ inoremap <C-c> <Esc>
 " TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
 nnoremap <TAB>      :bnext<CR>
 nnoremap <S-TAB>    :bprevious<CR>
-nnoremap <Leader>dd :bd<CR>
 
 " Better tabbing
 vnoremap < <gv
@@ -112,6 +109,10 @@ nnoremap <A-l> <C-w>l
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
 
+" --------------------------------------------------------------------------- "
+" -------------------------- Plugin Key Mappings ---------------------------- "
+" --------------------------------------------------------------------------- "
+
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
 let g:undotree_WindowLayout = 2
@@ -119,11 +120,11 @@ let g:undotree_RelativeTimestamp = 0
 let g:undotree_SetFocusWhenToggle = 1
 
 " Terminal mode - Esc back to normal from insert
-tnoremap <Esc> <C-\><C-n>
-let g:floaterm_keymap_toggle = '<leader>tt'
-let g:floaterm_keymap_next   = '<leader>tr'     " think (tr) terminal-rotate
-let g:floaterm_keymap_new    = '<leader>tn'
-let g:floaterm_keymap_kill   = '<leader>tk'
+tnoremap <A-c> <C-\><C-n>
+let g:floaterm_keymap_toggle = '<F1>'
+let g:floaterm_keymap_prev   = '<F2>'     
+let g:floaterm_keymap_next   = '<F3>'     
+let g:floaterm_keymap_new    = '<F4>'
 let g:floaterm_height=0.8
 
 " FZF key maps --  fzf : fzf~ : ripgrep  
