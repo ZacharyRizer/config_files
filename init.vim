@@ -32,7 +32,7 @@ set updatetime=50                         " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
 " Help menu displays to the right
-autocmd! FileType help :wincmd L | :vert resize 85 
+autocmd! FileType help :wincmd L | :vert resize 85
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
@@ -46,6 +46,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'honza/vim-snippets'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
@@ -76,21 +77,22 @@ map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
 
-" TAB and Shift TAB to cycle buffers -- leader-w kills a buffer
-nnoremap <TAB>      :bnext<CR>
-nnoremap <S-TAB>    :bprevious<CR>
+" Shift TAB to cycle buffers
+nnoremap <S-TAB>    :bnext<CR>
 
-" Better tabbing
+" better tabbing and moving blocks of code
 vnoremap < <gv
 vnoremap > >gv
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
 
 " Easy comments
-nnoremap <space>/ :Commentary<CR> 
+nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
 
 " change windows from any mode
 tnoremap <A-h> <C-\><C-N><C-w>h
-tnoremap <A-j> <C-\><C-N><C-w>j 
+tnoremap <A-j> <C-\><C-N><C-w>j
 tnoremap <A-k> <C-\><C-N><C-w>k
 tnoremap <A-l> <C-\><C-N><C-w>l
 onoremap <A-h> <Esc><C-w>h
@@ -105,9 +107,18 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-" change window width 
+" change window width
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
+
+" center current search result on the screen
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
+cnoremap <expr> <CR> getcmdtype() =~ '[/?]' ? '<CR>zz' : '<CR>'
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Plugin Key Mappings ---------------------------- "
@@ -122,12 +133,12 @@ let g:undotree_SetFocusWhenToggle = 1
 " Terminal mode - Esc back to normal from insert
 tnoremap <A-c> <C-\><C-n>
 let g:floaterm_keymap_toggle = '<F1>'
-let g:floaterm_keymap_prev   = '<F2>'     
-let g:floaterm_keymap_next   = '<F3>'     
+let g:floaterm_keymap_prev   = '<F2>'
+let g:floaterm_keymap_next   = '<F3>'
 let g:floaterm_keymap_new    = '<F4>'
 let g:floaterm_height=0.8
 
-" FZF key maps --  fzf : fzf~ : ripgrep  
+" FZF key maps --  fzf : fzf~ : ripgrep
 nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
 nnoremap <leader>fg  :Rg<CR>
@@ -161,11 +172,12 @@ let g:onedark_hide_endofbuffer=1
 let g:onedark_terminal_italics=1
 let g:onedark_termcolors=256
 
-colorscheme onedark 
+colorscheme onedark
 
 " vim-airline tab and theme config
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#fnamemod=':t'
 let g:airline_theme='onedark'
 let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
 
@@ -201,14 +213,14 @@ endfunction
 " ==> coc-yank -- show yank list
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
-" ==> coc-highlight 
+" ==> coc-highlight
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" ==> coc-Prettier command -- format on save 
+" ==> coc-Prettier command -- format on save
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 inoremap <silent><expr> <C-space> coc#refresh()
 
-" ==> coc-snippets -- function like vscode snippets 
+" ==> coc-snippets -- function like vscode snippets
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
@@ -249,7 +261,7 @@ let g:startify_bookmarks = [
 " custom header
 let g:startify_custom_header = [
             \ ' ______   ______     ______     ______   ______     __   __        ______   ______     ______     __  __    ',
-            \ '/\  == \ /\  == \   /\  __ \   /\__  _\ /\  __ \   /\ "-.\ \      /\  == \ /\  __ \   /\  ___\   /\ \/ /    ', 
+            \ '/\  == \ /\  == \   /\  __ \   /\__  _\ /\  __ \   /\ "-.\ \      /\  == \ /\  __ \   /\  ___\   /\ \/ /    ',
             \ '\ \  _-/ \ \  __<   \ \ \/\ \  \/_/\ \/ \ \ \/\ \  \ \ \-.  \     \ \  _-/ \ \  __ \  \ \ \____  \ \  _"-.  ',
             \ ' \ \_\    \ \_\ \_\  \ \_____\    \ \_\  \ \_____\  \ \_\\"\_\     \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \_\ ',
             \ '  \/_/     \/_/ /_/   \/_____/     \/_/   \/_____/   \/_/ \/_/      \/_/     \/_/\/_/   \/_____/   \/_/\/_/ '
