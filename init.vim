@@ -19,7 +19,6 @@ set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
 set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
-set showtabline=2                         " Always show tabs/buffers above
 set signcolumn=yes                        " So COC diagnostics don't cause a column shift
 set smarttab                              " Auto selects tab size based on surrounding tabs
 set softtabstop=4                         " Insert 4 spaces for a tab
@@ -42,20 +41,23 @@ au BufEnter * set fo-=c fo-=r fo-=o
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'sheerun/vim-polyglot'
-Plug 'honza/vim-snippets'
+Plug 'jiangmiao/auto-pairs'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
+Plug 'sheerun/vim-polyglot'
+Plug 'honza/vim-snippets'
+
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-slash'
 Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'kevinhwang91/rnvimr'
 Plug 'voldikss/vim-floaterm'
-Plug 'jiangmiao/auto-pairs'
+
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
@@ -69,16 +71,10 @@ call plug#end()
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" set leader key
-let g:mapleader = " "
-
 " Shift-y like D and C <==> C-L to clear hlsearch <==> C-c for ESC
+let g:mapleader = " "
 map Y y$
-nnoremap <C-L> :nohl<CR><C-L>
 inoremap <C-c> <Esc>
-
-" Shift TAB to cycle buffers
-nnoremap <S-TAB>    :bnext<CR>
 
 " better tabbing and moving blocks of code
 vnoremap < <gv
@@ -91,11 +87,7 @@ nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
 
 " change windows from any mode
-tnoremap <A-h> <C-\><C-N><C-w>h
-tnoremap <A-j> <C-\><C-N><C-w>j
-tnoremap <A-k> <C-\><C-N><C-w>k
-tnoremap <A-l> <C-\><C-N><C-w>l
-onoremap <A-h> <Esc><C-w>h
+inoremap <A-h> <Esc><C-w>h
 inoremap <A-j> <Esc><C-w>j
 inoremap <A-k> <Esc><C-w>k
 inoremap <A-l> <Esc><C-w>l
@@ -110,19 +102,18 @@ nnoremap <A-l> <C-w>l
 " change window width
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
+" delete buffer
+nnoremap <A-d>      :bd<CR>
 
-" center current search result on the screen
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap * *zz
-nnoremap # #zz
-nnoremap g* g*zz
-nnoremap g# g#zz
-cnoremap <expr> <CR> getcmdtype() =~ '[/?]' ? '<CR>zz' : '<CR>'
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Plugin Key Mappings ---------------------------- "
 " --------------------------------------------------------------------------- "
+
+" vim-slash --- center current search result on the screen and blink 
+if has('timers')
+  noremap <expr> <plug>(slash-after) 'zz'.slash#blink(3, 75)
+endif
 
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -136,23 +127,15 @@ let g:floaterm_keymap_toggle = '<F1>'
 let g:floaterm_keymap_prev   = '<F2>'
 let g:floaterm_keymap_next   = '<F3>'
 let g:floaterm_keymap_new    = '<F4>'
-let g:floaterm_height=0.8
+let g:floaterm_height        = 0.8
+nmap <leader>r :FloatermNew ranger<CR>
 
 " FZF key maps --  fzf : fzf~ : ripgrep
 nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
-nnoremap <leader>fg  :Rg<CR>
+nnoremap <leader>fg :Rg<CR>
+nnoremap <leader>b  :Buffers<CR>
 let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
-
-" Ranger config - make ranger replace netrw and toggle with r
-let g:rnvimr_ex_enable = 1
-let g:rnvimr_layout = { 'relative': 'editor',
-            \ 'width': float2nr(round(0.6 * &columns)),
-            \ 'height': float2nr(round(0.8 * &lines)),
-            \ 'col': float2nr(round(0.2 * &columns)),
-            \ 'row': float2nr(round(0.1 * &lines)),
-            \ 'style': 'minimal' }
-nmap <leader>r :RnvimrToggle<CR>
 
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "
@@ -175,11 +158,21 @@ let g:onedark_termcolors=256
 colorscheme onedark
 
 " vim-airline tab and theme config
+let g:airline_theme='onedark'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
-let g:airline_theme='onedark'
+let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
