@@ -17,11 +17,11 @@ set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
-set shiftwidth=4                          " Change the number of space characters inserted for indentation
+set shiftwidth=2                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                        " So COC diagnostics don't cause a column shift
 set smarttab                              " Auto selects tab size based on surrounding tabs
-set softtabstop=4                         " Insert 4 spaces for a tab
+set softtabstop=2                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable 256 colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
@@ -103,7 +103,7 @@ nnoremap <A-l> <C-w>l
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
 " delete buffer
-nnoremap <A-d>      :bd<CR>
+nnoremap <A-d> :bd<CR>
 
 
 " --------------------------------------------------------------------------- "

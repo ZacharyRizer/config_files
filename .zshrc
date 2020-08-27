@@ -66,7 +66,19 @@ alias loadnvm='[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
 [[ -r $NVM_DIR/bash_completion ]] && \. $NVM_DIR/bash_completion
 
 # >>> conda initialize >>>
-export PATH="/Users/proton/miniconda3/bin:$PATH"
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/proton/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/proton/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/proton/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 
 # pyenv initialize
 if command -v pyenv 1>/dev/null 2>&1; then
