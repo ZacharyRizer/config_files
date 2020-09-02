@@ -2,7 +2,7 @@
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
-syntax enable                             " Enables syntax highlighing
+syntax on                                 " Enables syntax highlighing
 set autoindent                            " Makes indenting smart
 set background=dark                       " tell vim what the background color looks like
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
@@ -41,16 +41,15 @@ au BufEnter * set fo-=c fo-=r fo-=o
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'jiangmiao/auto-pairs'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
 Plug 'sheerun/vim-polyglot'
 Plug 'honza/vim-snippets'
 
+Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-slash'
-Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
 Plug 'voldikss/vim-floaterm'
@@ -153,7 +152,6 @@ endif
 hi Comment cterm=italic
 let g:onedark_hide_endofbuffer=1
 let g:onedark_terminal_italics=1
-let g:onedark_termcolors=256
 
 colorscheme onedark
 
@@ -212,6 +210,10 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " ==> coc-Prettier command -- format on save
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 inoremap <silent><expr> <C-space> coc#refresh()
+
+" ==> coc-pairs auto indent on enter
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " ==> coc-snippets -- function like vscode snippets
 inoremap <silent><expr> <TAB>
