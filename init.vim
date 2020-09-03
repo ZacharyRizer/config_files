@@ -1,10 +1,9 @@
-"  --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- "
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
 syntax enable                             " Enables syntax highlighing
 set autoindent                            " Makes indenting smart
-set background=dark                       " tell vim what the background color looks like
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set colorcolumn=80                        " Show indicator at 80 chars
 set cmdheight=2                           " More space for displaying messages
@@ -63,7 +62,7 @@ Plug 'tpope/vim-surround'
 
 Plug 'vim-airline/vim-airline'          " theme related plugins
 Plug 'vim-airline/vim-airline-themes'
-Plug 'joshdick/onedark.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 call plug#end()
 
@@ -71,7 +70,7 @@ call plug#end()
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Shift-y like D and C <==> C-L to clear hlsearch <==> C-c for ESC
+" Shift-y like D and C <==> C-c for ESC
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
@@ -102,9 +101,34 @@ nnoremap <A-l> <C-w>l
 " change window width
 nnoremap <A-=> :vertical resize +25<CR>
 nnoremap <A--> :vertical resize -25<CR>
+
+" --------------------------------------------------------------------------- "
+" ----------------------------- Theme Config -------------------------------- "
+" --------------------------------------------------------------------------- "
+
+augroup dracula_customization
+  au!
+  autocmd ColorScheme dracula hi DraculaComment gui=italic
+augroup END
+
+colorscheme dracula
+
 " delete buffer
 nnoremap <A-d> :bd<CR>
 
+
+" vim-airline tab and theme config
+let g:airline_theme='dracula'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#fnamemod=':t'
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Plugin Key Mappings ---------------------------- "
@@ -138,6 +162,7 @@ nnoremap <leader>b  :Buffers<CR>
 let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
 
 " --------------------------------------------------------------------------- "
+<<<<<<< Updated upstream
 " ----------------------------- Theme Config -------------------------------- "
 " --------------------------------------------------------------------------- "
 
@@ -175,6 +200,8 @@ nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
 
 " --------------------------------------------------------------------------- "
+=======
+>>>>>>> Stashed changes
 " ------------------------------ COC Config --------------------------------- "
 " --------------------------------------------------------------------------- "
 

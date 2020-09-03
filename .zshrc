@@ -89,4 +89,3 @@ export PIPENV_VENV_IN_PROJECT=1
 export PYENV_ROOT=$HOME/.pyenv
 export PATH="$PYENV_ROOT/shims:$PATH"
 
-
