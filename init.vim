@@ -2,7 +2,7 @@
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
-syntax on                                 " Enables syntax highlighing
+syntax enable                             " Enables syntax highlighing
 set autoindent                            " Makes indenting smart
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set colorcolumn=80                        " Show indicator at 80 chars
@@ -161,45 +161,6 @@ nnoremap <leader>b  :Buffers<CR>
 let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
 
 " --------------------------------------------------------------------------- "
-<<<<<<< Updated upstream
-" ----------------------------- Theme Config -------------------------------- "
-" --------------------------------------------------------------------------- "
-
-" onedark.vim override: Don't set a background color when running in a terminal;
-if (has("autocmd") && !has("gui_running"))
-  augroup colorset
-    autocmd!
-    let s:white = { "gui": "#D5D8DF", "cterm": "145", "cterm16" : "7" }
-    autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
-  augroup END
-endif
-
-hi Comment cterm=italic
-let g:onedark_hide_endofbuffer=1
-let g:onedark_terminal_italics=1
-
-colorscheme onedark
-
-" vim-airline tab and theme config
-let g:airline_theme='onedark'
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#fnamemod=':t'
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-nmap <leader>6 <Plug>AirlineSelectTab6
-nmap <leader>7 <Plug>AirlineSelectTab7
-nmap <leader>8 <Plug>AirlineSelectTab8
-nmap <leader>9 <Plug>AirlineSelectTab9
-
-" --------------------------------------------------------------------------- "
-=======
->>>>>>> Stashed changes
 " ------------------------------ COC Config --------------------------------- "
 " --------------------------------------------------------------------------- "
 
