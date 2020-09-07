@@ -22,7 +22,7 @@ set signcolumn=yes                        " So COC diagnostics don't cause a col
 set smarttab                              " Auto selects tab size based on surrounding tabs
 set softtabstop=2                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
-set termguicolors                         " Enable 256 colors
+set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
@@ -84,6 +84,9 @@ vnoremap K :m '<-2<cr>gv=gv
 nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
 
+" exit terminal mode
+tnoremap <A-c> <C-\><C-n>
+
 " change windows from any mode
 inoremap <A-h> <Esc><C-w>h
 inoremap <A-j> <Esc><C-w>j
@@ -133,7 +136,7 @@ nmap <leader>5 <Plug>AirlineSelectTab5
 " -------------------------- Plugin Key Mappings ---------------------------- "
 " --------------------------------------------------------------------------- "
 
-" vim-slash --- center current search result on the screen and blink 
+" vim-slash --- center current search result on the screen and blink
 if has('timers')
   noremap <expr> <plug>(slash-after) 'zz'.slash#blink(3, 75)
 endif
@@ -144,13 +147,16 @@ let g:undotree_WindowLayout = 2
 let g:undotree_RelativeTimestamp = 0
 let g:undotree_SetFocusWhenToggle = 1
 
-" Terminal mode - Esc back to normal from insert
-tnoremap <A-c> <C-\><C-n>
+" Terminal mode
+tnoremap <A-t> <C-\><C-n><C-w><C-w>
+noremap <A-t> <C-w><C-w>
 let g:floaterm_keymap_toggle = '<F1>'
 let g:floaterm_keymap_prev   = '<F2>'
 let g:floaterm_keymap_next   = '<F3>'
 let g:floaterm_keymap_new    = '<F4>'
-let g:floaterm_height        = 0.8
+let g:floaterm_position      = 'right'
+let g:floaterm_height        = 0.9
+let g:floaterm_width         = 0.55
 nmap <leader>r :FloatermNew ranger<CR>
 
 " FZF key maps --  fzf : fzf~ : ripgrep
@@ -158,7 +164,7 @@ nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>fh :FZF~<CR>
 nnoremap <leader>fg :Rg<CR>
 nnoremap <leader>b  :Buffers<CR>
-let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.8 } }
+let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.8 } }
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
