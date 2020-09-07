@@ -85,7 +85,7 @@ nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
 
 " exit terminal mode
-tnoremap <A-c> <C-\><C-n>
+tnoremap <C-e> <C-\><C-n>
 
 " change windows from any mode
 inoremap <A-h> <Esc><C-w>h
@@ -147,9 +147,9 @@ let g:undotree_WindowLayout = 2
 let g:undotree_RelativeTimestamp = 0
 let g:undotree_SetFocusWhenToggle = 1
 
-" Terminal mode
-tnoremap <A-t> <C-\><C-n><C-w><C-w>
-noremap <A-t> <C-w><C-w>
+" Floaterm Modes
+tnoremap <F5> <C-\><C-n><C-w><C-w>
+noremap <F5> <C-w><C-w>
 let g:floaterm_keymap_toggle = '<F1>'
 let g:floaterm_keymap_prev   = '<F2>'
 let g:floaterm_keymap_next   = '<F3>'
@@ -157,6 +157,7 @@ let g:floaterm_keymap_new    = '<F4>'
 let g:floaterm_position      = 'right'
 let g:floaterm_height        = 0.9
 let g:floaterm_width         = 0.55
+hi FloatermNC guifg=Gray
 nmap <leader>r :FloatermNew ranger<CR>
 
 " FZF settings
