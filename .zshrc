@@ -39,6 +39,7 @@ export TERM="xterm-256color"
 alias g++="g++ -std=c++17"
 alias rm="rm -i"
 alias r="ranger"
+alias ft="floaterm"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 
@@ -54,8 +55,7 @@ export FZF_DEFAULT_OPTS="
 --info=inline
 --height=75%
 --multi
---preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
---border
+--preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 "
 export FZF_DEFAULT_COMMAND="fd --hidden --exclude '.git' --exclude 'node_modules'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

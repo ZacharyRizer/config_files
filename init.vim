@@ -159,12 +159,11 @@ let g:floaterm_height        = 0.9
 let g:floaterm_width         = 0.55
 nmap <leader>r :FloatermNew ranger<CR>
 
-" FZF key maps --  fzf : fzf~ : ripgrep
+" FZF settings
 nnoremap <leader>f  :FZF<CR>
-nnoremap <leader>fh :FZF~<CR>
-nnoremap <leader>fg :Rg<CR>
+nnoremap <leader>g  :Rg<CR>
 nnoremap <leader>b  :Buffers<CR>
-let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.8 } }
+let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.8, 'border': 'sharp' } }
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
