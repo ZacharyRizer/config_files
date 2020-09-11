@@ -42,11 +42,12 @@ alias r="ranger"
 alias ft="floaterm"
 alias lzg="lazygit"
 alias lzd="lazydocker"
+alias ipy="ipython"
+alias activate="conda activate"
+alias deactivate="conda deactivate"
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
-# Add cmake cli to path
-export PATH="/Applications/CMake.app/Contents/bin":"$PATH"
 
 # FZF settings
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -1,0 +1,15 @@
+{
+  "clangd.path": "/usr/local/Cellar/llvm/10.0.0_3/bin/clangd",
+  "clangd.semanticHighlighting": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "cpp",
+    "javascript",
+    "html",
+    "json",
+    "python"
+  ],
+  "coc.preferences.formatOnType": true,
+  "python.jediEnabled": false,
+  "suggest.noselect": false
+}

@@ -29,8 +29,6 @@ set undofile                              " Returns name of undo file
 set updatetime=50                         " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
-" Help menu displays to the right
-autocmd! FileType help :wincmd L | :vert resize 85
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
@@ -41,9 +39,8 @@ au BufEnter * set fo-=c fo-=r fo-=o
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic highlighting in C++
+Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic hstatementsighlighting in C++
 Plug 'sheerun/vim-polyglot'
-Plug 'honza/vim-snippets'
 
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -51,28 +48,32 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-slash'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'voldikss/vim-floaterm'
+Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-Plug 'tpope/vim-commentary'
+Plug 'christoomey/vim-tmux-navigator'          " ==> Tmux-Vim integration <== 
+Plug 'RyanMillerC/better-vim-tmux-resizer'
+Plug 'benmills/vimux'
+
+Plug 'tpope/vim-commentary'           
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
-Plug 'vim-airline/vim-airline'          " theme related plugins
+Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 
 call plug#end()
-
 " --------------------------------------------------------------------------- "
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Shift-y like D and C <==> C-c for ESC
+" Shift-y like D and C <==> C-c for ESC insert and terminal mode
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
+tnoremap <C-c> <C-\><C-n>
 
 " better tabbing and moving blocks of code
 vnoremap < <gv
@@ -83,26 +84,6 @@ vnoremap K :m '<-2<cr>gv=gv
 " Easy comments
 nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
-
-" exit terminal mode
-tnoremap <C-e> <C-\><C-n>
-
-" change windows from any mode
-inoremap <A-h> <Esc><C-w>h
-inoremap <A-j> <Esc><C-w>j
-inoremap <A-k> <Esc><C-w>k
-inoremap <A-l> <Esc><C-w>l
-vnoremap <A-h> <Esc><C-w>h
-vnoremap <A-j> <Esc><C-w>j
-vnoremap <A-k> <Esc><C-w>k
-vnoremap <A-l> <Esc><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
-" change window width
-nnoremap <A-=> :vertical resize +25<CR>
-nnoremap <A--> :vertical resize -25<CR>
 
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "
@@ -138,7 +119,7 @@ nmap <leader>5 <Plug>AirlineSelectTab5
 
 " vim-slash --- center current search result on the screen and blink
 if has('timers')
-  noremap <expr> <plug>(slash-after) 'zz'.slash#blink(3, 75)
+  noremap <expr> <plug>(slash-after) 'zz'.slash#blink(3, 100)
 endif
 
 " Toggle undo tree
@@ -147,24 +128,67 @@ let g:undotree_WindowLayout = 2
 let g:undotree_RelativeTimestamp = 0
 let g:undotree_SetFocusWhenToggle = 1
 
-" Floaterm Modes
-tnoremap <F5> <C-\><C-n><C-w><C-w>
-noremap <F5> <C-w><C-w>
-let g:floaterm_keymap_toggle = '<F1>'
-let g:floaterm_keymap_prev   = '<F2>'
-let g:floaterm_keymap_next   = '<F3>'
-let g:floaterm_keymap_new    = '<F4>'
-let g:floaterm_position      = 'right'
-let g:floaterm_height        = 0.9
-let g:floaterm_width         = 0.55
-hi FloatermNC guifg=Gray
-nmap <leader>r :FloatermNew ranger<CR>
+" Ranger
+let g:rnvimr_ex_enable = 1        " Ranger replaces netrw
+let g:rnvimr_enable_bw = 1        " wipe Nvim buffers when deleted in Ranger
+let g:rnvimr_layout = { 'relative': 'editor',
+            \ 'width': float2nr(round(0.8 * &columns)),
+            \ 'height': float2nr(round(0.8 * &lines)),
+            \ 'col': float2nr(round(0.1 * &columns)),
+            \ 'row': float2nr(round(0.1 * &lines)),
+            \ 'style': 'minimal' }
+nmap <Leader>r :RnvimrToggle<CR>
 
 " FZF settings
 nnoremap <leader>f  :FZF<CR>
 nnoremap <leader>g  :Rg<CR>
 nnoremap <leader>b  :Buffers<CR>
-let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.8, 'border': 'sharp' } }
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp' } }
+
+" --------------------------------------------------------------------------- "
+" -------------------------- Tmux Vim Integration---------------------------- "
+" --------------------------------------------------------------------------- "
+
+" Tmux-Vim navigator 
+let g:tmux_navigator_no_mappings = 1
+let g:tmux_navigator_save_on_switch = 1
+" change windows from any mode
+nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <A-p> :TmuxNavigatePrevious<cr>
+inoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
+inoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
+inoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
+inoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
+inoremap <silent> <A-p> <Esc> :TmuxNavigatePrevious<cr>
+vnoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
+vnoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
+vnoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
+vnoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
+vnoremap <silent> <A-p> <Esc> :TmuxNavigatePrevious<cr>
+
+" Tmux-Vim Resizer
+let g:tmux_resizer_no_mappings = 1
+" resize windows 
+nnoremap <silent> <A-Left> :TmuxResizeLeft<cr>
+nnoremap <silent> <A-Down> :TmuxResizeDown<cr>
+nnoremap <silent> <A-Up> :TmuxResizeUp<cr>
+nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
+
+" Vimux
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+
+function! VimuxSlime()
+  call VimuxSendText(@v)
+  call VimuxSendKeys("Enter")
+endfunction
+" If text is selected, save it in the v buffer and send that buffer it to tmux
+vmap <Leader>vs "vy :call VimuxSlime()<CR>
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
@@ -197,9 +221,6 @@ endfunction
 
 " ==> coc-yank -- show yank list
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-
-" ==> coc-highlight
-autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " ==> coc-Prettier command -- format on save
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -244,6 +265,7 @@ let g:startify_lists = [
 let g:startify_bookmarks = [
             \ { 'c': '~/.config/nvim/coc-settings.json' },
             \ { 'i': '~/.config/nvim/init.vim' },
+            \ { 't': '~/.tmux.conf' },
             \ { 'z': '~/.zshrc' }
             \ ]
 
