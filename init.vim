@@ -69,11 +69,13 @@ call plug#end()
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Shift-y like D and C <==> C-c for ESC insert and terminal mode
+" Shift-y like D and C <==> C-c for ESC insert 
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
-tnoremap <C-c> <C-\><C-n>
+
+" close current split
+nnoremap <A-d> <C-w>c
 
 " better tabbing and moving blocks of code
 vnoremap < <gv
@@ -96,10 +98,6 @@ augroup END
 
 colorscheme dracula
 
-" delete buffer
-nnoremap <A-d> :bd<CR>
-
-
 " vim-airline tab and theme config
 let g:airline_theme='dracula'
 let g:airline_powerline_fonts = 1
@@ -107,6 +105,7 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#fnamemod=':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
+nnoremap <Leader>d :bd<CR>
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
