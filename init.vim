@@ -77,6 +77,9 @@ inoremap <C-c> <Esc>
 " close current split
 nnoremap <A-d> <C-w>c
 
+" help menu opens vertically
+cnoreabbrev h vert h
+
 " better tabbing and moving blocks of code
 vnoremap < <gv
 vnoremap > >gv
@@ -176,10 +179,10 @@ nnoremap <silent> <A-Down> :TmuxResizeDown<cr>
 nnoremap <silent> <A-Up> :TmuxResizeUp<cr>
 nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
 
-" Vimux
-" Prompt for a command to run
+" ==> Vimux <== "
+let g:VimuxOrientation = "h"
+let g:VimuxHeight = "35"
 map <Leader>vp :VimuxPromptCommand<CR>
-" Run last command executed by VimuxRunCommand
 map <Leader>vl :VimuxRunLastCommand<CR>
 
 function! VimuxSlime()
