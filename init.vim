@@ -50,11 +50,11 @@ Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
-Plug 'christoomey/vim-tmux-navigator'          " ==> Tmux-Vim integration <== 
+Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
 Plug 'benmills/vimux'
 
-Plug 'tpope/vim-commentary'           
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rsi'
@@ -63,13 +63,14 @@ Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 " --------------------------------------------------------------------------- "
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Shift-y like D and C <==> C-c for ESC insert 
+" Shift-y like D and C <==> C-c for ESC insert
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
@@ -142,7 +143,7 @@ let g:rnvimr_layout = { 'relative': 'editor',
 nmap <Leader>r :RnvimrToggle<CR>
 
 " FZF settings
-nnoremap <leader>f  :FZF<CR>
+nnoremap <C-t>  :FZF<CR>
 nnoremap <leader>g  :Rg<CR>
 nnoremap <leader>b  :Buffers<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp' } }
@@ -151,7 +152,7 @@ let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp' 
 " -------------------------- Tmux Vim Integration---------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Tmux-Vim navigator 
+" Tmux-Vim navigator
 let g:tmux_navigator_no_mappings = 1
 let g:tmux_navigator_save_on_switch = 1
 " change windows from any mode
@@ -173,7 +174,7 @@ vnoremap <silent> <A-p> <Esc> :TmuxNavigatePrevious<cr>
 
 " Tmux-Vim Resizer
 let g:tmux_resizer_no_mappings = 1
-" resize windows 
+" resize windows
 nnoremap <silent> <A-Left> :TmuxResizeLeft<cr>
 nnoremap <silent> <A-Down> :TmuxResizeDown<cr>
 nnoremap <silent> <A-Up> :TmuxResizeUp<cr>
