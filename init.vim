@@ -57,6 +57,7 @@ Plug 'benmills/vimux'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
@@ -185,6 +186,7 @@ let g:VimuxOrientation = "h"
 let g:VimuxHeight = "35"
 map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vi :VimuxInspectRunner<CR>
 
 function! VimuxSlime()
   call VimuxSendText(@v)
