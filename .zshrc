@@ -43,6 +43,7 @@ alias ft="floaterm"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 alias ipy="ipython"
+alias t='tmux attach || tmux new -s BASE'
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"

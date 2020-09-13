@@ -200,8 +200,8 @@ vmap <Leader>vs "vy :call VimuxSlime()<CR>
 " --------------------------------------------------------------------------- "
 
 " Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent>gd <Plug>(coc-definition)
@@ -250,8 +250,9 @@ endfunction
 let g:coc_snippet_next = '<tab>'
 
 " ==> coc-git
-nmap <Leader>gk <Plug>(coc-git-prevchunk)
-nmap <Leader>gj <Plug>(coc-git-nextchunk)
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap gs <Plug>(coc-git-chunkinfo)
 
 " -----------------------------------------------------------------------------
 " <=== ---------------------- Startify Config ---------------------------- ===>
