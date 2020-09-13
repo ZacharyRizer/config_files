@@ -57,7 +57,6 @@ Plug 'benmills/vimux'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
@@ -104,12 +103,12 @@ augroup END
 colorscheme dracula
 
 " vim-airline tab and theme config
-let g:airline_theme='dracula'
+let g:airline_theme ='dracula'
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#fnamemod=':t'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#ignore_bufadd_pat='!|startify|undotree'
+let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 nnoremap <Leader>d :bd<CR>
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
@@ -129,7 +128,7 @@ endif
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
 let g:undotree_WindowLayout = 2
-let g:undotree_RelativeTimestamp = 0
+let g:undotree_RelativeTimestamp = 1
 let g:undotree_SetFocusWhenToggle = 1
 
 " Ranger
@@ -258,10 +257,16 @@ nmap gs <Plug>(coc-git-chunkinfo)
 " <=== ---------------------- Startify Config ---------------------------- ===>
 " -----------------------------------------------------------------------------
 
-" Session storage location
-let g:startify_session_dir = '~/.config/nvim/session'
 " keybind to open startify
-nnoremap <leader><CR> :Startify<CR>
+nnoremap <Leader><CR> :Startify<CR>
+" if all buffers are closed, open Startify
+autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
+
+" session management
+let g:startify_session_dir = '~/.config/nvim/sessions'
+let g:startify_session_persistence = 1
+let g:startify_session_delete_buffers = 1
+nnoremap <Leader>s :SSave! <CR>
 
 " structure of start screen
 let g:startify_lists = [
