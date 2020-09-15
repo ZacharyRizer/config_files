@@ -64,6 +64,7 @@ Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
+Plug 'TaDaa/vimade'   " ==> dims pane when not in use
 
 call plug#end()
 " --------------------------------------------------------------------------- "
@@ -115,6 +116,12 @@ nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
 nmap <leader>4 <Plug>AirlineSelectTab4
 nmap <leader>5 <Plug>AirlineSelectTab5
+
+" vimade
+let g:vimade = {}
+let g:vimade.fadelevel = 0.6
+let g:vimade.fadepriority = 0
+let g:vimade.enablefocusfading = 1
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Plugin Key Mappings ---------------------------- "
@@ -182,7 +189,7 @@ nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
 
 " ==> Vimux <== "
 let g:VimuxOrientation = "h"
-let g:VimuxHeight = "35"
+let g:VimuxHeight = "30"
 map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vi :VimuxInspectRunner<CR>
@@ -266,6 +273,7 @@ autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | St
 let g:startify_session_dir = '~/.config/nvim/sessions'
 let g:startify_session_persistence = 1
 let g:startify_session_delete_buffers = 1
+let g:startify_change_to_vcs_root = 1
 nnoremap <Leader>s :SSave! <CR>
 
 " structure of start screen
