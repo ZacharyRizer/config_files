@@ -11,7 +11,7 @@ HISTFILE=$HOME/.zsh_history
 
 # Enable autocompletions
 autoload -U compinit
-zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
 zmodload -i zsh/complist
 compinit
 
@@ -29,11 +29,10 @@ bindkey -e                  # emacs keybinds
 # basic exports
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
-export TERM="xterm-256color"
 export CLICOLOR=1
 
 # Aliases
-alias g++="g++ -std=c++17"
+alias g++="g++ -std=c++17 -Wall"
 alias rm="rm -i"
 alias r="ranger"
 alias lzg="lazygit"

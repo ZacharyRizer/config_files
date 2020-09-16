@@ -64,7 +64,6 @@ Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
-Plug 'TaDaa/vimade'   " ==> dims pane when not in use
 
 call plug#end()
 " --------------------------------------------------------------------------- "
@@ -92,6 +91,17 @@ vnoremap K :m '<-2<cr>gv=gv
 nnoremap <space>/ :Commentary<CR>
 vnoremap <space>/ :Commentary<CR>
 
+" tab/buffer manipulation
+nnoremap <Leader>d :bd<CR>
+nnoremap <Leader>D :bd!<CR>
+nnoremap <A-[>     :bprevious<CR>
+nnoremap <A-]>     :bnext<CR>
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+
 " --------------------------------------------------------------------------- "
 " ----------------------------- Theme Config -------------------------------- "
 " --------------------------------------------------------------------------- "
@@ -110,18 +120,6 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
-nnoremap <Leader>d :bd<CR>
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-
-" vimade
-let g:vimade = {}
-let g:vimade.fadelevel = 0.6
-let g:vimade.fadepriority = 0
-let g:vimade.enablefocusfading = 1
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Plugin Key Mappings ---------------------------- "
@@ -241,7 +239,12 @@ inoremap <silent><expr> <C-space> coc#refresh()
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" ==> coc-snippets -- function like vscode snippets
+" ==> coc-git
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap gs <Plug>(coc-git-chunkinfo)
+
+" ==> coc-snippets -- VSCode like tab completion
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
@@ -255,11 +258,6 @@ endfunction
 
 let g:coc_snippet_next = '<tab>'
 
-" ==> coc-git
-nmap [g <Plug>(coc-git-prevchunk)
-nmap ]g <Plug>(coc-git-nextchunk)
-nmap gs <Plug>(coc-git-chunkinfo)
-
 " -----------------------------------------------------------------------------
 " <=== ---------------------- Startify Config ---------------------------- ===>
 " -----------------------------------------------------------------------------
@@ -270,9 +268,8 @@ nnoremap <Leader><CR> :Startify<CR>
 autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
 
 " session management
-let g:startify_session_dir = '~/.config/nvim/sessions'
+let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
-let g:startify_session_delete_buffers = 1
 let g:startify_change_to_vcs_root = 1
 nnoremap <Leader>s :SSave! <CR>
 
