@@ -1,8 +1,5 @@
-# Set Spaceship as a prompt
-autoload -U promptinit; promptinit
-prompt spaceship
-SPACESHIP_USER_SHOW="false"
-SPACESHIP_VI_MODE_SHOW="false"
+# Set Starship as a prompt
+eval "$(starship init zsh)"
 
 # Save history so we get auto suggestions
 HISTSIZE=100000

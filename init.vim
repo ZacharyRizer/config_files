@@ -42,7 +42,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic hstatementsighlighting in C++
 Plug 'sheerun/vim-polyglot'
 
-Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-slash'
@@ -64,6 +63,7 @@ Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
+Plug 'psliwka/vim-smoothie'
 
 call plug#end()
 " --------------------------------------------------------------------------- "
@@ -116,7 +116,6 @@ colorscheme dracula
 " vim-airline tab and theme config
 let g:airline_theme ='dracula'
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
@@ -187,10 +186,11 @@ nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
 
 " ==> Vimux <== "
 let g:VimuxOrientation = "h"
-let g:VimuxHeight = "30"
+let g:VimuxHeight = "35"
 map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :VimuxRunLastCommand<CR>
 map <Leader>vi :VimuxInspectRunner<CR>
+map <Leader>vz :VimuxZoomRunner<CR>
 
 function! VimuxSlime()
   call VimuxSendText(@v)
@@ -270,7 +270,6 @@ autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | St
 " session management
 let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 1
 nnoremap <Leader>s :SSave! <CR>
 
 " structure of start screen
