@@ -31,11 +31,11 @@ export CLICOLOR=1
 # Aliases
 alias g++="g++ -std=c++17 -Wall"
 alias rm="rm -i"
-alias r="ranger"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 alias ipy="ipython"
-alias t='tmux attach || tmux new -s BASE'
+alias tmux='tmux attach || tmux new -s BASE'
+tr() { tree -L "$1" }
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
@@ -63,6 +63,10 @@ alias loadnvm='[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
 # ----------------------------------------------------------------------------#
 
 
+#-------------------------==> rbenv settings <==------------------------------#
+eval "$(rbenv init -)"
+# ----------------------------------------------------------------------------#
+
 # -----------------------==> conda initialize <== ----------------------------#
 __conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
@@ -77,6 +81,8 @@ fi
 unset __conda_setup
 # ----------------------------------------------------------------------------#
 
+# use the ipython debugger rather than standard pdb
+export PYTHONBREAKPOINT=ipdb.set_trace
 
 # -----------------------==> pyenv initialize <== ----------------------------#
 if command -v pyenv 1>/dev/null 2>&1; then

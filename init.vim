@@ -45,9 +45,9 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-slash'
+Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 
 Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
@@ -74,6 +74,7 @@ call plug#end()
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
+nnoremap <leader>` :source $MYVIMRC<CR>
 
 " close current split
 nnoremap <A-d> <C-w>c
@@ -94,8 +95,8 @@ vnoremap <space>/ :Commentary<CR>
 " tab/buffer manipulation
 nnoremap <Leader>d :bd<CR>
 nnoremap <Leader>D :bd!<CR>
-nnoremap <A-[>     :bprevious<CR>
-nnoremap <A-]>     :bnext<CR>
+nnoremap <Leader>[ :bprevious<CR>
+nnoremap <Leader>] :bnext<CR>
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -116,6 +117,7 @@ colorscheme dracula
 " vim-airline tab and theme config
 let g:airline_theme ='dracula'
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
@@ -135,22 +137,15 @@ let g:undotree_WindowLayout = 2
 let g:undotree_RelativeTimestamp = 1
 let g:undotree_SetFocusWhenToggle = 1
 
-" Ranger
-let g:rnvimr_ex_enable = 1        " Ranger replaces netrw
-let g:rnvimr_enable_bw = 1        " wipe Nvim buffers when deleted in Ranger
-let g:rnvimr_layout = { 'relative': 'editor',
-            \ 'width': float2nr(round(0.8 * &columns)),
-            \ 'height': float2nr(round(0.8 * &lines)),
-            \ 'col': float2nr(round(0.1 * &columns)),
-            \ 'row': float2nr(round(0.1 * &lines)),
-            \ 'style': 'minimal' }
-nmap <Leader>r :RnvimrToggle<CR>
-
 " FZF settings
 nnoremap <C-t>  :FZF<CR>
+nnoremap <leader>f  :GFiles<CR>
 nnoremap <leader>g  :Rg<CR>
 nnoremap <leader>b  :Buffers<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp' } }
+
+" vim-rooter ==> if root isn't found, use current directory
+let g:rooter_change_directory_for_non_project_files = 'current'
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Tmux Vim Integration---------------------------- "
@@ -184,20 +179,28 @@ nnoremap <silent> <A-Down> :TmuxResizeDown<cr>
 nnoremap <silent> <A-Up> :TmuxResizeUp<cr>
 nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
 
-" ==> Vimux <== "
+" ---------------------------- ==> Vimux <== -------------------------------- "
 let g:VimuxOrientation = "h"
 let g:VimuxHeight = "35"
-map <Leader>vp :VimuxPromptCommand<CR>
-map <Leader>vl :VimuxRunLastCommand<CR>
+map <Leader>vp :w<CR> <bar> :VimuxPromptCommand<CR>
+map <Leader>vl :w<CR> <bar> :VimuxRunLastCommand<CR>
 map <Leader>vi :VimuxInspectRunner<CR>
 map <Leader>vz :VimuxZoomRunner<CR>
 
+" If text is selected, save it in the v buffer and send that buffer it to tmux
 function! VimuxSlime()
   call VimuxSendText(@v)
   call VimuxSendKeys("Enter")
 endfunction
-" If text is selected, save it in the v buffer and send that buffer it to tmux
 vmap <Leader>vs "vy :call VimuxSlime()<CR>
+
+" for C++ projects, build from cmake, then run binary
+function! CPP_Build_Run()
+  call VimuxOpenRunner()
+  call VimuxSendText("cmake --build build ; bin/* ")
+  call VimuxSendKeys("Enter")
+endfunction
+map <F5> :w<CR> <bar> :call CPP_Build_Run()<CR>
 
 " --------------------------------------------------------------------------- "
 " ------------------------------ COC Config --------------------------------- "
@@ -258,11 +261,14 @@ endfunction
 
 let g:coc_snippet_next = '<tab>'
 
+" ==> coc-explorer
+nmap <space>e :CocCommand explorer<CR>
+autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
+
 " -----------------------------------------------------------------------------
 " <=== ---------------------- Startify Config ---------------------------- ===>
 " -----------------------------------------------------------------------------
 
-" keybind to open startify
 nnoremap <Leader><CR> :Startify<CR>
 " if all buffers are closed, open Startify
 autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
@@ -275,7 +281,6 @@ nnoremap <Leader>s :SSave! <CR>
 " structure of start screen
 let g:startify_lists = [
             \ { 'type': 'files',     'header': ['   Files'] },
-            \ { 'type': 'dir',       'header': ['   Current Project Directory '. getcwd()] },
             \ { 'type': 'sessions',  'header': ['   Sessions'] },
             \ { 'type': 'bookmarks', 'header': ['   Bookmarks'] }
             \ ]
