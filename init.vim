@@ -2,31 +2,28 @@
 " -------------------------- General Settings ------------------------------- "
 " --------------------------------------------------------------------------- "
 
-syntax enable                             " Enables syntax highlighing
-set autoindent                            " Makes indenting smart
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set colorcolumn=80                        " Show indicator at 80 chars
 set cmdheight=2                           " More space for displaying messages
 set expandtab                             " Converts tabs to spaces
 set hidden                                " Required to keep multiple buffers open multiple buffers
-set ignorecase incsearch smartcase        " more intelligent search
+set inccommand=nosplit                    " interactive substitution
 set mouse=a                               " Enable your mouse
-set nobackup noswapfile                   " This is recommended by coc
+set nobackup noswapfile nowritebackup     " This is recommended by coc
 set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
 set shiftwidth=2                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
-set signcolumn=yes                        " So COC diagnostics don't cause a column shift
-set smarttab                              " Auto selects tab size based on surrounding tabs
+set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
 set softtabstop=2                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
-set updatetime=50                         " Faster completion
+set updatetime=150                        " Faster completion
 set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
 
 " Remove auto commentinging new line
@@ -42,20 +39,20 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic hstatementsighlighting in C++
 Plug 'sheerun/vim-polyglot'
 
+Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-slash'
-Plug 'airblade/vim-rooter'
-Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
+Plug 'mhinz/vim-startify'
+Plug 'wincent/loupe'
 
 Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
 Plug 'benmills/vimux'
 
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
@@ -63,16 +60,14 @@ Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
-Plug 'psliwka/vim-smoothie'
 
 call plug#end()
 " --------------------------------------------------------------------------- "
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Shift-y like D and C <==> C-c for ESC insert
+" leader key, preferred escape, source rc file
 let g:mapleader = " "
-map Y y$
 inoremap <C-c> <Esc>
 nnoremap <leader>` :source $MYVIMRC<CR>
 
@@ -85,8 +80,8 @@ cnoreabbrev h vert h
 " better tabbing and moving blocks of code
 vnoremap < <gv
 vnoremap > >gv
-vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
+vnoremap J :m '>+1<cr>gv=gv
 
 " Easy comments
 nnoremap <space>/ :Commentary<CR>
@@ -126,10 +121,9 @@ let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 " -------------------------- Plugin Key Mappings ---------------------------- "
 " --------------------------------------------------------------------------- "
 
-" vim-slash --- center current search result on the screen and blink
-if has('timers')
-  noremap <expr> <plug>(slash-after) 'zz'.slash#blink(3, 100)
-endif
+" Loupe Clear Highlight
+let g:LoupeVeryMagic=0
+nmap <C-c> <Plug>(LoupeClearHighlight)
 
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -206,17 +200,32 @@ map <F5> :w<CR> <bar> :call CPP_Build_Run()<CR>
 " ------------------------------ COC Config --------------------------------- "
 " --------------------------------------------------------------------------- "
 
-" Use `[g` and `]g` to navigate diagnostics
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+
+" Use `[d` and `]d` to navigate diagnostics
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
-nmap <silent>gd <Plug>(coc-definition)
-nmap <silent>gt <Plug>(coc-type-definition)
-nmap <silent>gi <Plug>(coc-implementation)
-nmap <silent>gr <Plug>(coc-references)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
 
+" Show documentation
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
@@ -232,11 +241,8 @@ endfunction
 " -----------------------------------------------------------------------------
 
 " ==> coc-yank -- show yank list
+map Y y$
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-
-" ==> coc-Prettier command -- format on save
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-inoremap <silent><expr> <C-space> coc#refresh()
 
 " ==> coc-pairs auto indent on enter
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
@@ -246,20 +252,6 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
 nmap gs <Plug>(coc-git-chunkinfo)
-
-" ==> coc-snippets -- VSCode like tab completion
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:coc_snippet_next = '<tab>'
 
 " ==> coc-explorer
 nmap <space>e :CocCommand explorer<CR>
