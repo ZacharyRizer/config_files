@@ -14,17 +14,19 @@ set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
-set shiftwidth=2                          " Change the number of space characters inserted for indentation
+set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
-set softtabstop=2                         " Insert 4 spaces for a tab
+set softtabstop=4                         " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
 set updatetime=150                        " Faster completion
-set wildignorecase wildmode=longest:full  " 'bash' like completion in command mode
+set wildignorecase                        " bash like completion in command mode
+set wildmode=longest:full,full 
+
 
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
@@ -36,7 +38,7 @@ au BufEnter * set fo-=c fo-=r fo-=o
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'jackguo380/vim-lsp-cxx-highlight'   " allows semantic hstatementsighlighting in C++
+Plug 'jackguo380/vim-lsp-cxx-highlight'   " semantic highlighting in C++
 Plug 'sheerun/vim-polyglot'
 
 Plug 'airblade/vim-rooter'
@@ -62,12 +64,14 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
+
 " --------------------------------------------------------------------------- "
 " -------------------------- Basic Key Mappings ----------------------------- "
 " --------------------------------------------------------------------------- "
 
 " leader key, preferred escape, source rc file
 let g:mapleader = " "
+map Y y$
 inoremap <C-c> <Esc>
 nnoremap <leader>` :source $MYVIMRC<CR>
 
@@ -90,8 +94,8 @@ vnoremap <space>/ :Commentary<CR>
 " tab/buffer manipulation
 nnoremap <Leader>d :bd<CR>
 nnoremap <Leader>D :bd!<CR>
-nnoremap <Leader>[ :bprevious<CR>
-nnoremap <Leader>] :bnext<CR>
+nnoremap <C-[>     :bprevious<CR>
+nnoremap <C-]>     :bnext<CR>
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -121,25 +125,83 @@ let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 " -------------------------- Plugin Key Mappings ---------------------------- "
 " --------------------------------------------------------------------------- "
 
+" FZF settings
+nnoremap <leader>f  :FZF<CR>
+nnoremap <leader>g  :Rg<Space>
+nnoremap <leader>b  :Buffers<CR>
+nnoremap <leader>c  :Commands<CR>
+let g:fzf_layout = { 'window': { 'width': 0.99, 'height': 0.9, 'border': 'sharp' } }
+
 " Loupe Clear Highlight
 let g:LoupeVeryMagic=0
 nmap <C-c> <Plug>(LoupeClearHighlight)
 
 " Toggle undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
-let g:undotree_WindowLayout = 2
-let g:undotree_RelativeTimestamp = 1
 let g:undotree_SetFocusWhenToggle = 1
-
-" FZF settings
-nnoremap <C-t>  :FZF<CR>
-nnoremap <leader>f  :GFiles<CR>
-nnoremap <leader>g  :Rg<CR>
-nnoremap <leader>b  :Buffers<CR>
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'border': 'sharp' } }
 
 " vim-rooter ==> if root isn't found, use current directory
 let g:rooter_change_directory_for_non_project_files = 'current'
+
+" --------------------------------------------------------------------------- "
+" ------------------------------ COC Config --------------------------------- "
+" --------------------------------------------------------------------------- "
+
+" basic completion mappings
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Show documentation
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Use `[d` and `]d` to navigate diagnostics
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <leader>rn <Plug>(coc-rename)
+
+" -----------------------------------------------------------------------------
+" <=== ------------- COC Extension Specific Commands --------------------- ===>
+" -----------------------------------------------------------------------------
+
+" ==> coc-yank -- show yank list
+nnoremap <silent> <space>y  :<C-u>CocList --normal yank<cr>
+
+" ==> coc-pairs auto indent on enter
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" ==> coc-git
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap gs <Plug>(coc-git-chunkinfo)
+
+" ==> coc-explorer
+nmap <space>e :CocCommand explorer<CR>
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Tmux Vim Integration---------------------------- "
@@ -153,17 +215,14 @@ nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <A-p> :TmuxNavigatePrevious<cr>
 inoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
 inoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
 inoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
 inoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
-inoremap <silent> <A-p> <Esc> :TmuxNavigatePrevious<cr>
 vnoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
 vnoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
 vnoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
 vnoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
-vnoremap <silent> <A-p> <Esc> :TmuxNavigatePrevious<cr>
 
 " Tmux-Vim Resizer
 let g:tmux_resizer_no_mappings = 1
@@ -176,10 +235,8 @@ nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
 " ---------------------------- ==> Vimux <== -------------------------------- "
 let g:VimuxOrientation = "h"
 let g:VimuxHeight = "35"
-map <Leader>vp :w<CR> <bar> :VimuxPromptCommand<CR>
+map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :w<CR> <bar> :VimuxRunLastCommand<CR>
-map <Leader>vi :VimuxInspectRunner<CR>
-map <Leader>vz :VimuxZoomRunner<CR>
 
 " If text is selected, save it in the v buffer and send that buffer it to tmux
 function! VimuxSlime()
@@ -195,67 +252,6 @@ function! CPP_Build_Run()
   call VimuxSendKeys("Enter")
 endfunction
 map <F5> :w<CR> <bar> :call CPP_Build_Run()<CR>
-
-" --------------------------------------------------------------------------- "
-" ------------------------------ COC Config --------------------------------- "
-" --------------------------------------------------------------------------- "
-
-" Use tab for trigger completion with characters ahead and navigate.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-
-" Use `[d` and `]d` to navigate diagnostics
-nmap <silent> [d <Plug>(coc-diagnostic-prev)
-nmap <silent> ]d <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gt <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)
-
-" Show documentation
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" -----------------------------------------------------------------------------
-" <=== ------------- COC Extension Specific Commands --------------------- ===>
-" -----------------------------------------------------------------------------
-
-" ==> coc-yank -- show yank list
-map Y y$
-nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
-
-" ==> coc-pairs auto indent on enter
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" ==> coc-git
-nmap [g <Plug>(coc-git-prevchunk)
-nmap ]g <Plug>(coc-git-nextchunk)
-nmap gs <Plug>(coc-git-chunkinfo)
-
-" ==> coc-explorer
-nmap <space>e :CocCommand explorer<CR>
-autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 
 " -----------------------------------------------------------------------------
 " <=== ---------------------- Startify Config ---------------------------- ===>
@@ -286,10 +282,4 @@ let g:startify_bookmarks = [
             \ ]
 
 " custom header
-let g:startify_custom_header = [
-            \ ' ______   ______     ______     ______   ______     __   __        ______   ______     ______     __  __    ',
-            \ '/\  == \ /\  == \   /\  __ \   /\__  _\ /\  __ \   /\ "-.\ \      /\  == \ /\  __ \   /\  ___\   /\ \/ /    ',
-            \ '\ \  _-/ \ \  __<   \ \ \/\ \  \/_/\ \/ \ \ \/\ \  \ \ \-.  \     \ \  _-/ \ \  __ \  \ \ \____  \ \  _"-.  ',
-            \ ' \ \_\    \ \_\ \_\  \ \_____\    \ \_\  \ \_____\  \ \_\\"\_\     \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \_\ ',
-            \ '  \/_/     \/_/ /_/   \/_____/     \/_/   \/_____/   \/_/ \/_/      \/_/     \/_/\/_/   \/_____/   \/_/\/_/ '
-            \ ]
+let g:startify_custom_header = 'startify#pad(startify#fortune#cowsay())'
