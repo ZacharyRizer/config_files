@@ -25,8 +25,7 @@ set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
 set updatetime=150                        " Faster completion
 set wildignorecase                        " bash like completion in command mode
-set wildmode=longest:full,full 
-
+set wildmode=longest:full,full
 
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
@@ -93,7 +92,7 @@ vnoremap <space>/ :Commentary<CR>
 
 " tab/buffer manipulation
 nnoremap <Leader>d :bd<CR>
-nnoremap <Leader>D :bd!<CR>
+nnoremap <Leader>D :%bd <bar> :e# <CR>
 nnoremap <C-[>     :bprevious<CR>
 nnoremap <C-]>     :bnext<CR>
 nmap <leader>1 <Plug>AirlineSelectTab1
@@ -126,8 +125,8 @@ let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 " --------------------------------------------------------------------------- "
 
 " FZF settings
-nnoremap <leader>f  :FZF<CR>
-nnoremap <leader>g  :Rg<Space>
+nnoremap <C-p>      :FZF<CR>
+nnoremap <leader>f  :Rg<Space>
 nnoremap <leader>b  :Buffers<CR>
 nnoremap <leader>c  :Commands<CR>
 let g:fzf_layout = { 'window': { 'width': 0.99, 'height': 0.9, 'border': 'sharp' } }
@@ -163,7 +162,7 @@ endfunction
 inoremap <silent><expr> <c-space> coc#refresh()
 
 " Show documentation
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent>gh :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -201,7 +200,7 @@ nmap ]g <Plug>(coc-git-nextchunk)
 nmap gs <Plug>(coc-git-chunkinfo)
 
 " ==> coc-explorer
-nmap <space>e :CocCommand explorer<CR>
+nmap <C-e> :CocCommand explorer<CR>
 
 " --------------------------------------------------------------------------- "
 " -------------------------- Tmux Vim Integration---------------------------- "
@@ -211,26 +210,26 @@ nmap <space>e :CocCommand explorer<CR>
 let g:tmux_navigator_no_mappings = 1
 let g:tmux_navigator_save_on_switch = 1
 " change windows from any mode
-nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-inoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
-inoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
-inoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
-inoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
-vnoremap <silent> <A-h> <Esc> :TmuxNavigateLeft<cr>
-vnoremap <silent> <A-j> <Esc> :TmuxNavigateDown<cr>
-vnoremap <silent> <A-k> <Esc> :TmuxNavigateUp<cr>
-vnoremap <silent> <A-l> <Esc> :TmuxNavigateRight<cr>
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+inoremap <silent> <C-h> <Esc> :TmuxNavigateLeft<cr>
+inoremap <silent> <C-j> <Esc> :TmuxNavigateDown<cr>
+inoremap <silent> <C-k> <Esc> :TmuxNavigateUp<cr>
+inoremap <silent> <C-l> <Esc> :TmuxNavigateRight<cr>
+vnoremap <silent> <C-h> <Esc> :TmuxNavigateLeft<cr>
+vnoremap <silent> <C-j> <Esc> :TmuxNavigateDown<cr>
+vnoremap <silent> <C-k> <Esc> :TmuxNavigateUp<cr>
+vnoremap <silent> <C-l> <Esc> :TmuxNavigateRight<cr>
 
 " Tmux-Vim Resizer
 let g:tmux_resizer_no_mappings = 1
 " resize windows
-nnoremap <silent> <A-Left> :TmuxResizeLeft<cr>
-nnoremap <silent> <A-Down> :TmuxResizeDown<cr>
-nnoremap <silent> <A-Up> :TmuxResizeUp<cr>
-nnoremap <silent> <A-Right> :TmuxResizeRight<cr>
+nnoremap <silent> <A-h> :TmuxResizeLeft<cr>
+nnoremap <silent> <A-j> :TmuxResizeDown<cr>
+nnoremap <silent> <A-k> :TmuxResizeUp<cr>
+nnoremap <silent> <A-l> :TmuxResizeRight<cr>
 
 " ---------------------------- ==> Vimux <== -------------------------------- "
 let g:VimuxOrientation = "h"

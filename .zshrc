@@ -19,9 +19,10 @@ setopt hist_ignore_all_dups # remove older duplicate entries from history
 setopt hist_reduce_blanks   # remove superfluous blanks from history items
 setopt inc_append_history   # save history entries as soon as they are entered
 setopt share_history        # share history between different instances
-setopt correct_all          # autocorrect commands
+unsetopt correct_all        # autocorrect commands
 unsetopt BEEP               # no beep sounds
 bindkey -e                  # emacs keybinds
+
 
 # basic exports
 export EDITOR="nvim"
@@ -34,24 +35,26 @@ alias rm="rm -i"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 alias ipy="ipython"
-alias tmux='tmux attach || tmux new -s BASE'
 tr() { tree -L "$1" }
+code() {
+   open -a Visual\ Studio\ Code.app $1
+}
 
 # Put Homebrew's sbin in path
 export PATH="/usr/local/sbin:$PATH"
 
-
 # -------------------------==> FZF settings <== ------------------------------#
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS="
+--bind 'ctrl-/:toggle-preview'
 --layout=reverse
 --info=inline
---height=75%
+--height=80%
 --multi
 --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || 
   ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 "
-export FZF_DEFAULT_COMMAND="fd --hidden --exclude '.git' --exclude 'node_modules'"
+export FZF_DEFAULT_COMMAND="fd --hidden -E '.git' -E '.venv' -E 'node_modules'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # ----------------------------------------------------------------------------#
 
