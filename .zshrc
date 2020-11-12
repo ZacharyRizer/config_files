@@ -35,6 +35,7 @@ alias rm="rm -i"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 alias ipy="ipython"
+alias tx="tmux a"
 tr() { tree -L "$1" }
 code() {
    open -a Visual\ Studio\ Code.app $1
@@ -51,6 +52,7 @@ export FZF_DEFAULT_OPTS="
 --info=inline
 --height=80%
 --multi
+--preview-window=:hidden
 --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || 
   ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 "

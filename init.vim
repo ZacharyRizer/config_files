@@ -1,19 +1,22 @@
-" --------------------------------------------------------------------------- "
-" -------------------------- General Settings ------------------------------- "
-" --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- ==>
+" -------------------------- General Settings ------------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
-set colorcolumn=80                        " Show indicator at 80 chars
 set cmdheight=2                           " More space for displaying messages
 set expandtab                             " Converts tabs to spaces
+set foldexpr=nvim_treesitter#foldexpr()   " Folding decided by treesitter
+set foldlevelstart=100                    " Start unfolded
+set foldmethod=expr                       " Fold based on sytax
 set hidden                                " Required to keep multiple buffers open multiple buffers
-set inccommand=nosplit                    " interactive substitution
+set inccommand=nosplit                    " Interactive substitution
 set mouse=a                               " Enable your mouse
 set nobackup noswapfile nowritebackup     " This is recommended by coc
 set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
+set pumblend=15                           " Transparency for floating windows 
 set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
@@ -24,25 +27,27 @@ set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
 set undofile                              " Returns name of undo file
 set updatetime=150                        " Faster completion
-set wildignorecase                        " bash like completion in command mode
-set wildmode=longest:full,full
+set wildignorecase                        " Ignore Case in wildmenu
+set wildmode=longest:full,full            " Bash like completion in command model
+set wildoptions+=pum                      " Wildmenu completion happens in a popup
 
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
-" --------------------------------------------------------------------------- "
-" ------------------------------ Plug-Ins ----------------------------------- "
-" --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- ==>
+" ------------------------------ Plug-Ins ----------------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'jackguo380/vim-lsp-cxx-highlight'   " semantic highlighting in C++
-Plug 'sheerun/vim-polyglot'
+Plug 'nvim-treesitter/nvim-treesitter'
+
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
 
 Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'wincent/loupe'
@@ -64,9 +69,9 @@ Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
-" --------------------------------------------------------------------------- "
-" -------------------------- Basic Key Mappings ----------------------------- "
-" --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- ==>
+" -------------------------- Basic Key Mappings ----------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 " leader key, preferred escape, source rc file
 let g:mapleader = " "
@@ -101,9 +106,9 @@ nmap <leader>3 <Plug>AirlineSelectTab3
 nmap <leader>4 <Plug>AirlineSelectTab4
 nmap <leader>5 <Plug>AirlineSelectTab5
 
-" --------------------------------------------------------------------------- "
-" ----------------------------- Theme Config -------------------------------- "
-" --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- ==>
+" ----------------------------- Theme Config -------------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 augroup dracula_customization
   au!
@@ -120,16 +125,9 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 
-" --------------------------------------------------------------------------- "
-" -------------------------- Plugin Key Mappings ---------------------------- "
-" --------------------------------------------------------------------------- "
-
-" FZF settings
-nnoremap <C-p>      :FZF<CR>
-nnoremap <leader>f  :Rg<Space>
-nnoremap <leader>b  :Buffers<CR>
-nnoremap <leader>c  :Commands<CR>
-let g:fzf_layout = { 'window': { 'width': 0.99, 'height': 0.9, 'border': 'sharp' } }
+" --------------------------------------------------------------------------- ==>
+" -------------------------- Plugin Key Mappings ---------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 " Loupe Clear Highlight
 let g:LoupeVeryMagic=0
@@ -142,9 +140,25 @@ let g:undotree_SetFocusWhenToggle = 1
 " vim-rooter ==> if root isn't found, use current directory
 let g:rooter_change_directory_for_non_project_files = 'current'
 
-" --------------------------------------------------------------------------- "
-" ------------------------------ COC Config --------------------------------- "
-" --------------------------------------------------------------------------- "
+" telescope setup
+nnoremap <leader>f :lua require'telescope.builtin'.find_files{find_command = { "fd", "--hidden", "-E", ".git", "-E", ".venv", "-E", "node_modules"}}<CR>
+nnoremap <leader>g :lua require'telescope.builtin'.live_grep{}<CR>
+nnoremap <leader>b :lua require'telescope.builtin'.buffers{}<CR>
+nnoremap <leader>t :lua require'telescope.builtin'.treesitter{}<CR>
+
+" Treesitter setup for highlight
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "all",
+  highlight = { enable = true },
+  incremental_selection = { enable = true },
+  textobjects = { enable = true },
+}
+EOF
+
+" --------------------------------------------------------------------------- ==>
+" ------------------------------ COC Config --------------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 " basic completion mappings
 inoremap <silent><expr> <TAB>
@@ -183,9 +197,9 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
 
-" -----------------------------------------------------------------------------
-" <=== ------------- COC Extension Specific Commands --------------------- ===>
-" -----------------------------------------------------------------------------
+" --------------------------------------------------------------------------- ==>
+" ------------------ COC Extension Specific Commands ------------------------ ==> 
+" --------------------------------------------------------------------------- ==>
 
 " ==> coc-yank -- show yank list
 nnoremap <silent> <space>y  :<C-u>CocList --normal yank<cr>
@@ -202,9 +216,9 @@ nmap gs <Plug>(coc-git-chunkinfo)
 " ==> coc-explorer
 nmap <C-e> :CocCommand explorer<CR>
 
-" --------------------------------------------------------------------------- "
-" -------------------------- Tmux Vim Integration---------------------------- "
-" --------------------------------------------------------------------------- "
+" --------------------------------------------------------------------------- ==>
+" -------------------------- Tmux Vim Integration---------------------------- ==>
+" --------------------------------------------------------------------------- ==>
 
 " Tmux-Vim navigator
 let g:tmux_navigator_no_mappings = 1
@@ -252,9 +266,9 @@ function! CPP_Build_Run()
 endfunction
 map <F5> :w<CR> <bar> :call CPP_Build_Run()<CR>
 
-" -----------------------------------------------------------------------------
-" <=== ---------------------- Startify Config ---------------------------- ===>
-" -----------------------------------------------------------------------------
+" --------------------------------------------------------------------------- ==>
+" ---------------------------- Startify Config ------------------------------ ==>
+" --------------------------------------------------------------------------- ==>
 
 nnoremap <Leader><CR> :Startify<CR>
 " if all buffers are closed, open Startify
