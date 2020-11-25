@@ -16,7 +16,7 @@ set noerrorbells                          " Stop those annoying bells
 set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
-set pumblend=15                           " Transparency for floating windows 
+set pumblend=15                           " Transparency for floating windows
 set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
@@ -34,6 +34,9 @@ set wildoptions+=pum                      " Wildmenu completion happens in a pop
 " Remove auto commentinging new line
 au BufEnter * set fo-=c fo-=r fo-=o
 
+" help menu opens vertically
+cnoreabbrev h vert h
+
 " --------------------------------------------------------------------------- ==>
 " ------------------------------ Plug-Ins ----------------------------------- ==>
 " --------------------------------------------------------------------------- ==>
@@ -42,6 +45,8 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'Yggdroot/indentLine'                    " ==> indent guides
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -73,17 +78,14 @@ call plug#end()
 " -------------------------- Basic Key Mappings ----------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-" leader key, preferred escape, source rc file
 let g:mapleader = " "
 map Y y$
 inoremap <C-c> <Esc>
 nnoremap <leader>` :source $MYVIMRC<CR>
 
-" close current split
-nnoremap <A-d> <C-w>c
-
-" help menu opens vertically
-cnoreabbrev h vert h
+" unmapping a few keys that annoy me
+nnoremap K <nop>
+nnoremap Q <nop>
 
 " better tabbing and moving blocks of code
 vnoremap < <gv
@@ -91,20 +93,21 @@ vnoremap > >gv
 vnoremap K :m '<-2<cr>gv=gv
 vnoremap J :m '>+1<cr>gv=gv
 
-" Easy comments
-nnoremap <space>/ :Commentary<CR>
-vnoremap <space>/ :Commentary<CR>
+" easy comments
+nnoremap <space>/ :Commentary<cr>
+vnoremap <space>/ :Commentary<cr>
 
 " tab/buffer manipulation
-nnoremap <Leader>d :bd<CR>
-nnoremap <Leader>D :%bd <bar> :e# <CR>
-nnoremap <C-[>     :bprevious<CR>
-nnoremap <C-]>     :bnext<CR>
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
+nnoremap <leader>d   :bd<cr>
+nnoremap <TAB>       :bnext<cr>
+nnoremap <S-TAB>     :bprevious<cr>
+nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
+nmap <leader>1 <plug>AirlineSelectTab1
+nmap <leader>2 <plug>AirlineSelectTab2
+nmap <leader>3 <plug>AirlineSelectTab3
+nmap <leader>4 <plug>AirlineSelectTab4
+nmap <leader>5 <plug>AirlineSelectTab5
+nmap <leader>6 <plug>AirlineSelectTab6
 
 " --------------------------------------------------------------------------- ==>
 " ----------------------------- Theme Config -------------------------------- ==>
@@ -112,8 +115,8 @@ nmap <leader>5 <Plug>AirlineSelectTab5
 
 augroup dracula_customization
   au!
-  autocmd ColorScheme dracula hi DraculaComment gui=italic
-augroup END
+  autocmd colorscheme dracula hi draculacomment gui=italic
+augroup end
 
 colorscheme dracula
 
@@ -126,7 +129,7 @@ let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 
 " --------------------------------------------------------------------------- ==>
-" -------------------------- Plugin Key Mappings ---------------------------- ==>
+" -------------------------- plugin key mappings ---------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
 " Loupe Clear Highlight
@@ -142,19 +145,21 @@ let g:rooter_change_directory_for_non_project_files = 'current'
 
 " telescope setup
 nnoremap <leader>f :lua require'telescope.builtin'.find_files{find_command = { "fd", "--hidden", "-E", ".git", "-E", ".venv", "-E", "node_modules"}}<CR>
-nnoremap <leader>g :lua require'telescope.builtin'.live_grep{}<CR>
+nnoremap <leader>g :lua require'telescope.builtin'.grep_string({ search = vim.fn.input("Grep For > ")})<CR>
 nnoremap <leader>b :lua require'telescope.builtin'.buffers{}<CR>
-nnoremap <leader>t :lua require'telescope.builtin'.treesitter{}<CR>
+nnoremap <leader>c :lua require'telescope.builtin'.commands{}<CR>
 
 " Treesitter setup for highlight
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "all",
   highlight = { enable = true },
-  incremental_selection = { enable = true },
-  textobjects = { enable = true },
 }
 EOF
+
+" Indent Guide settings
+let g:indent_blankline_char = "¦"
+let g:indentLine_fileType = ['cs', 'css', 'cpp', 'html', 'javascript', 'json', 'python', 'typescript']
 
 " --------------------------------------------------------------------------- ==>
 " ------------------------------ COC Config --------------------------------- ==>
@@ -198,7 +203,7 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
 
 " --------------------------------------------------------------------------- ==>
-" ------------------ COC Extension Specific Commands ------------------------ ==> 
+" ------------------ COC Extension Specific Commands ------------------------ ==>
 " --------------------------------------------------------------------------- ==>
 
 " ==> coc-yank -- show yank list
@@ -223,6 +228,7 @@ nmap <C-e> :CocCommand explorer<CR>
 " Tmux-Vim navigator
 let g:tmux_navigator_no_mappings = 1
 let g:tmux_navigator_save_on_switch = 1
+let g:tmux_navigator_disable_when_zoomed = 1
 " change windows from any mode
 nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
@@ -244,6 +250,9 @@ nnoremap <silent> <A-h> :TmuxResizeLeft<cr>
 nnoremap <silent> <A-j> :TmuxResizeDown<cr>
 nnoremap <silent> <A-k> :TmuxResizeUp<cr>
 nnoremap <silent> <A-l> :TmuxResizeRight<cr>
+
+" close current split for both Tmux and Vim
+nnoremap <A-d> <C-w>c
 
 " ---------------------------- ==> Vimux <== -------------------------------- "
 let g:VimuxOrientation = "h"
