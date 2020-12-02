@@ -1,59 +1,20 @@
 " --------------------------------------------------------------------------- ==>
-" -------------------------- General Settings ------------------------------- ==>
-" --------------------------------------------------------------------------- ==>
-
-set clipboard=unnamedplus                 " Copy paste between vim and everything else
-set cmdheight=2                           " More space for displaying messages
-set expandtab                             " Converts tabs to spaces
-set foldexpr=nvim_treesitter#foldexpr()   " Folding decided by treesitter
-set foldlevelstart=100                    " Start unfolded
-set foldmethod=expr                       " Fold based on sytax
-set hidden                                " Required to keep multiple buffers open multiple buffers
-set inccommand=nosplit                    " Interactive substitution
-set mouse=a                               " Enable your mouse
-set nobackup noswapfile nowritebackup     " This is recommended by coc
-set noerrorbells                          " Stop those annoying bells
-set noshowmode                            " Airline takes care of showing modes
-set nowrap                                " Display long lines as just one line
-set number relativenumber                 " Line numbers
-set pumblend=15                           " Transparency for floating windows
-set shiftwidth=4                          " Change the number of space characters inserted for indentation
-set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
-set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
-set softtabstop=4                         " Insert 4 spaces for a tab
-set splitbelow splitright                 " Splits will automatically be below and to the right
-set termguicolors                         " Enable gui colors
-set timeoutlen=250                        " By default timeoutlen is 1000 ms
-set undodir=~/.vim/undodir                " Creates directory to store undos
-set undofile                              " Returns name of undo file
-set updatetime=150                        " Faster completion
-set wildignorecase                        " Ignore Case in wildmenu
-set wildmode=longest:full,full            " Bash like completion in command model
-set wildoptions+=pum                      " Wildmenu completion happens in a popup
-
-" Remove auto commentinging new line
-au BufEnter * set fo-=c fo-=r fo-=o
-
-" help menu opens vertically
-cnoreabbrev h vert h
-
-" --------------------------------------------------------------------------- ==>
 " ------------------------------ Plug-Ins ----------------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'antoinemadec/coc-fzf'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'Yggdroot/indentLine'                    " ==> indent guides
 Plug 'lukas-reineke/indent-blankline.nvim'
 
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-lua/telescope.nvim'
-
 Plug 'airblade/vim-rooter'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'mbbill/undotree'
+Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'mhinz/vim-startify'
 Plug 'wincent/loupe'
 
@@ -73,6 +34,53 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
+
+" --------------------------------------------------------------------------- ==>
+" -------------------------- General Settings ------------------------------- ==>
+" --------------------------------------------------------------------------- ==>
+
+call yankstack#setup()                    " this has to be called before set clipboard
+set clipboard=unnamedplus                 " Copy paste between vim and everything else
+set cmdheight=2                           " More space for displaying messages
+set expandtab                             " Converts tabs to spaces
+set foldexpr=nvim_treesitter#foldexpr()   " Folding decided by treesitter
+set foldlevelstart=100                    " Start unfolded
+set foldmethod=expr                       " Fold based on sytax
+set hidden                                " Required to keep multiple buffers open
+set inccommand=nosplit                    " Interactive substitution
+set mouse=a                               " Enable your mouse
+set nobackup noswapfile nowritebackup     " This is recommended by coc
+set noerrorbells                          " Stop those annoying bells
+set noshowmode                            " Airline takes care of showing modes
+set nowrap                                " Display long lines as just one line
+set number relativenumber                 " Line numbers
+set pumblend=15                           " Transparency for floating windows
+set scrolloff=5                           " 5 lines are above and below cursor
+set shiftwidth=4                          " Change the number of space characters inserted for indentation
+set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
+set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
+set softtabstop=4 tabstop=4               " Insert 4 spaces for a tab
+set splitbelow splitright                 " Splits will automatically be below and to the right
+set termguicolors                         " Enable gui colors
+set timeoutlen=250                        " By default timeoutlen is 1000 ms
+set undodir=~/.vim/undodir                " Creates directory to store undos
+set undofile                              " Returns name of undo file
+set updatetime=100                        " Faster completion
+set wildignorecase                        " Ignore Case in wildmenu
+set wildmode=longest:full,full            " Bash like completion in command model
+set wildoptions+=pum                      " Wildmenu completion happens in a popup
+
+" Remove auto commentinging new line
+au BufEnter * set fo-=c fo-=r fo-=o
+
+" help menu opens vertically
+cnoreabbrev h vert h
+
+" highlight text when yanked
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
+augroup END
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- Basic Key Mappings ----------------------------- ==>
@@ -99,6 +107,7 @@ vnoremap <space>/ :Commentary<cr>
 
 " tab/buffer manipulation
 nnoremap <leader>d   :bd<cr>
+nnoremap <leader>dd  :bd!<cr>
 nnoremap <TAB>       :bnext<cr>
 nnoremap <S-TAB>     :bprevious<cr>
 nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
@@ -107,7 +116,6 @@ nmap <leader>2 <plug>AirlineSelectTab2
 nmap <leader>3 <plug>AirlineSelectTab3
 nmap <leader>4 <plug>AirlineSelectTab4
 nmap <leader>5 <plug>AirlineSelectTab5
-nmap <leader>6 <plug>AirlineSelectTab6
 
 " --------------------------------------------------------------------------- ==>
 " ----------------------------- Theme Config -------------------------------- ==>
@@ -132,22 +140,22 @@ let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
 " -------------------------- plugin key mappings ---------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
+" FZF setup
+let g:fzf_layout = {'window': { 'width': 0.9, 'height': 0.8 }}
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>c :Commands<CR>
+nnoremap <leader>f :Files<CR>
+nnoremap <leader>g :Rg<Space>
+command! -bang -nargs=? -complete=dir Files
+            \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
+
+" Indent Guide settings
+let g:indent_blankline_char = "¦"
+let g:indentLine_fileType = ['cs', 'css', 'cpp', 'html', 'javascript', 'json', 'python', 'typescript']
+
 " Loupe Clear Highlight
 let g:LoupeVeryMagic=0
 nmap <C-c> <Plug>(LoupeClearHighlight)
-
-" Toggle undo tree
-nnoremap <leader>u :UndotreeToggle<CR>
-let g:undotree_SetFocusWhenToggle = 1
-
-" vim-rooter ==> if root isn't found, use current directory
-let g:rooter_change_directory_for_non_project_files = 'current'
-
-" telescope setup
-nnoremap <leader>f :lua require'telescope.builtin'.find_files{find_command = { "fd", "--hidden", "-E", ".git", "-E", ".venv", "-E", "node_modules"}}<CR>
-nnoremap <leader>g :lua require'telescope.builtin'.grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-nnoremap <leader>b :lua require'telescope.builtin'.buffers{}<CR>
-nnoremap <leader>c :lua require'telescope.builtin'.commands{}<CR>
 
 " Treesitter setup for highlight
 lua <<EOF
@@ -157,9 +165,21 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
-" Indent Guide settings
-let g:indent_blankline_char = "¦"
-let g:indentLine_fileType = ['cs', 'css', 'cpp', 'html', 'javascript', 'json', 'python', 'typescript']
+" Undo tree
+nnoremap <leader>u :UndotreeToggle<CR>
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_SplitWidth = 35
+
+" Vim-Rooter ==> if root isn't found, use current directory
+let g:rooter_change_directory_for_non_project_files = 'current'
+
+" Vim-RSI ==> disable meta-key bindings
+let g:rsi_no_meta = 1
+
+" Yankstack
+nmap <A-n> <Plug>yankstack_substitute_newer_paste
+imap <A-n> <Plug>yankstack_substitute_newer_paste
+vmap <A-n> <Plug>yankstack_substitute_newer_paste
 
 " --------------------------------------------------------------------------- ==>
 " ------------------------------ COC Config --------------------------------- ==>
@@ -177,12 +197,8 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
 " Show documentation
 nnoremap <silent>gh :call <SID>show_documentation()<CR>
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -191,27 +207,16 @@ function! s:show_documentation()
   endif
 endfunction
 
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <leader>rn  <Plug>(coc-rename)
+nmap <leader>cs  :CocSearch <C-R>=expand("<cword>")<CR><CR>
+
 " Use `[d` and `]d` to navigate diagnostics
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gt <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)
-
-" --------------------------------------------------------------------------- ==>
-" ------------------ COC Extension Specific Commands ------------------------ ==>
-" --------------------------------------------------------------------------- ==>
-
-" ==> coc-yank -- show yank list
-nnoremap <silent> <space>y  :<C-u>CocList --normal yank<cr>
-
-" ==> coc-pairs auto indent on enter
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " ==> coc-git
 nmap [g <Plug>(coc-git-prevchunk)
@@ -220,6 +225,17 @@ nmap gs <Plug>(coc-git-chunkinfo)
 
 " ==> coc-explorer
 nmap <C-e> :CocCommand explorer<CR>
+
+" ==> coc-fzf -- 'list-diagnostics' & 'list-symbols'
+nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
+nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
+let g:coc_fzf_preview_toggle_key = 'ctrl-/'
+let g:coc_fzf_preview = 'down:50%'
+let g:coc_fzf_opts = []
+
+" ==> coc-pairs auto indent on enter
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- Tmux Vim Integration---------------------------- ==>
@@ -256,7 +272,7 @@ nnoremap <A-d> <C-w>c
 
 " ---------------------------- ==> Vimux <== -------------------------------- "
 let g:VimuxOrientation = "h"
-let g:VimuxHeight = "35"
+let g:VimuxHeight = "30"
 map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :w<CR> <bar> :VimuxRunLastCommand<CR>
 
@@ -266,14 +282,6 @@ function! VimuxSlime()
   call VimuxSendKeys("Enter")
 endfunction
 vmap <Leader>vs "vy :call VimuxSlime()<CR>
-
-" for C++ projects, build from cmake, then run binary
-function! CPP_Build_Run()
-  call VimuxOpenRunner()
-  call VimuxSendText("cmake --build build ; bin/* ")
-  call VimuxSendKeys("Enter")
-endfunction
-map <F5> :w<CR> <bar> :call CPP_Build_Run()<CR>
 
 " --------------------------------------------------------------------------- ==>
 " ---------------------------- Startify Config ------------------------------ ==>

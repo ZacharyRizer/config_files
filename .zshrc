@@ -25,9 +25,10 @@ bindkey -e                  # emacs keybinds
 
 
 # basic exports
-export EDITOR="nvim"
-export VISUAL="$EDITOR"
 export CLICOLOR=1
+export EDITOR="nvim"
+export LESS="iMRS"
+export VISUAL="$EDITOR"
 
 # Aliases
 alias g++="g++ -std=c++17 -Wall"
@@ -48,14 +49,14 @@ export PATH="/usr/local/sbin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_OPTS="
 --bind 'ctrl-/:toggle-preview'
+--bind 'ctrl-u:preview-half-page-up'
+--bind 'ctrl-d:preview-half-page-down'
 --layout=reverse
 --info=inline
---height=80%
 --multi
---preview-window=:hidden
---preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || 
-  ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 "
+# --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) ||
+#   ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 export FZF_DEFAULT_COMMAND="fd --hidden -E '.git' -E '.venv' -E 'node_modules'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # ----------------------------------------------------------------------------#
@@ -63,14 +64,10 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # -------------------------==> nvm settings <== ------------------------------#
 export NVM_DIR="$HOME/.nvm"
-alias loadnvm='[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
-[[ -r $NVM_DIR/bash_completion ]] && \. $NVM_DIR/bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # ----------------------------------------------------------------------------#
 
-
-#-------------------------==> rbenv settings <==------------------------------#
-eval "$(rbenv init -)"
-# ----------------------------------------------------------------------------#
 
 # -----------------------==> conda initialize <== ----------------------------#
 __conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
