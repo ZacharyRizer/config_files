@@ -10,13 +10,14 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'Yggdroot/indentLine'                    " ==> indent guides
 Plug 'lukas-reineke/indent-blankline.nvim'
 
-Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'mbbill/undotree'
 Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
-Plug 'wincent/loupe'
+Plug 'jkramer/vim-checkbox'
+Plug 'vimwiki/vimwiki'
+Plug 'ZacharyRizer/vim-slash'
 
 Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
@@ -29,8 +30,7 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
 Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
-Plug 'vim-airline/vim-airline-themes'
-Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ZacharyRizer/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
@@ -42,11 +42,13 @@ call plug#end()
 call yankstack#setup()                    " this has to be called before set clipboard
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set cmdheight=2                           " More space for displaying messages
+set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
 set expandtab                             " Converts tabs to spaces
 set foldexpr=nvim_treesitter#foldexpr()   " Folding decided by treesitter
 set foldlevelstart=100                    " Start unfolded
 set foldmethod=expr                       " Fold based on sytax
 set hidden                                " Required to keep multiple buffers open
+set ignorecase smartcase                  " Smart searching in regards to case
 set inccommand=nosplit                    " Interactive substitution
 set mouse=a                               " Enable your mouse
 set nobackup noswapfile nowritebackup     " This is recommended by coc
@@ -70,15 +72,14 @@ set wildignorecase                        " Ignore Case in wildmenu
 set wildmode=longest:full,full            " Bash like completion in command model
 set wildoptions+=pum                      " Wildmenu completion happens in a popup
 
-" Remove auto commentinging new line
-au BufEnter * set fo-=c fo-=r fo-=o
-
 " help menu opens vertically
 cnoreabbrev h vert h
 
-" highlight text when yanked
-augroup highlight_yank
+augroup AUTO_COMMANDS
     autocmd!
+    au BufWinEnter,FocusGained,VimEnter,WinEnter, * setlocal cursorline
+    au FocusLost,WinLeave * setlocal nocursorline
+    autocmd BufEnter * set fo-=c fo-=r fo-=o
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
 augroup END
 
@@ -87,19 +88,27 @@ augroup END
 " --------------------------------------------------------------------------- ==>
 
 let g:mapleader = " "
-map Y y$
 inoremap <C-c> <Esc>
+nnoremap <C-c> :nohl<CR>
 nnoremap <leader>` :source $MYVIMRC<CR>
 
 " unmapping a few keys that annoy me
 nnoremap K <nop>
 nnoremap Q <nop>
+nnoremap <Space> <nop>
 
-" better tabbing and moving blocks of code
+" easy word replace
+nnoremap c* *Ncgn
+
+" better tabbing
 vnoremap < <gv
 vnoremap > >gv
-vnoremap K :m '<-2<cr>gv=gv
-vnoremap J :m '>+1<cr>gv=gv
+nnoremap < <<
+nnoremap > >>
+
+" better yanking
+map Y y$
+vmap y y`>
 
 " easy comments
 nnoremap <space>/ :Commentary<cr>
@@ -111,30 +120,22 @@ nnoremap <leader>dd  :bd!<cr>
 nnoremap <TAB>       :bnext<cr>
 nnoremap <S-TAB>     :bprevious<cr>
 nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
-nmap <leader>1 <plug>AirlineSelectTab1
-nmap <leader>2 <plug>AirlineSelectTab2
-nmap <leader>3 <plug>AirlineSelectTab3
-nmap <leader>4 <plug>AirlineSelectTab4
-nmap <leader>5 <plug>AirlineSelectTab5
 
 " --------------------------------------------------------------------------- ==>
 " ----------------------------- Theme Config -------------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-augroup dracula_customization
-  au!
-  autocmd colorscheme dracula hi draculacomment gui=italic
-augroup end
-
+" forked custome dracula
 colorscheme dracula
 
 " vim-airline tab and theme config
-let g:airline_theme ='dracula'
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
-let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline_inactive_collapse = 0
+let g:airline_section_y = ''
+let g:airline#extensions#tabline#fnamemod = ':t:r'
 let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
+let g:airline#extensions#tabline#show_tab_type = 0
+let g:airline_extensions = ['branch', 'coc', 'tabline', 'undotree']
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- plugin key mappings ---------------------------- ==>
@@ -150,31 +151,38 @@ command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
 
 " Indent Guide settings
-let g:indent_blankline_char = "¦"
+let g:indent_blankline_char = "│"
+let g:indent_blankline_extra_indent_level = -1
+let g:indentLine_char = "│"
 let g:indentLine_fileType = ['cs', 'css', 'cpp', 'html', 'javascript', 'json', 'python', 'typescript']
 
-" Loupe Clear Highlight
-let g:LoupeVeryMagic=0
-nmap <C-c> <Plug>(LoupeClearHighlight)
-
 " Treesitter setup for highlight
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "all",
-  highlight = { enable = true },
-}
+lua << EOF
+    require'nvim-treesitter.configs'.setup {
+      ensure_installed = "maintained",
+      highlight = { enable = true },
+    }
 EOF
 
 " Undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
+let g:undotree_DiffpanelHeight = 15
 let g:undotree_SetFocusWhenToggle = 1
-let g:undotree_SplitWidth = 35
+let g:undotree_SplitWidth = 40
+let g:undotree_WindowLayout = 3
 
-" Vim-Rooter ==> if root isn't found, use current directory
-let g:rooter_change_directory_for_non_project_files = 'current'
+" Vim-Slash
+nmap <plug>(slash-after) zz
 
 " Vim-RSI ==> disable meta-key bindings
 let g:rsi_no_meta = 1
+
+" VimWiki
+let g:vimwiki_hl_headers = 1
+let g:vimwiki_hl_cb_checked = 2
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+nmap <C-n> <Plug>VimwikiNextLink
+nmap <C-p> <Plug>VimwikiPrevLink
 
 " Yankstack
 nmap <A-n> <Plug>yankstack_substitute_newer_paste
@@ -218,15 +226,11 @@ nmap <leader>cs  :CocSearch <C-R>=expand("<cword>")<CR><CR>
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
-" ==> coc-git
-nmap [g <Plug>(coc-git-prevchunk)
-nmap ]g <Plug>(coc-git-nextchunk)
-nmap gs <Plug>(coc-git-chunkinfo)
-
 " ==> coc-explorer
 nmap <C-e> :CocCommand explorer<CR>
 
 " ==> coc-fzf -- 'list-diagnostics' & 'list-symbols'
+nnoremap <Leader>la :<C-u>CocFzfList actions<CR>
 nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
 nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
 let g:coc_fzf_preview_toggle_key = 'ctrl-/'
@@ -287,14 +291,14 @@ vmap <Leader>vs "vy :call VimuxSlime()<CR>
 " ---------------------------- Startify Config ------------------------------ ==>
 " --------------------------------------------------------------------------- ==>
 
-nnoremap <Leader><CR> :Startify<CR>
 " if all buffers are closed, open Startify
 autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
 
-" session management
+nnoremap <Leader><CR> :Startify<CR>
+nnoremap <C-s> :SSave!<CR>
 let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
-nnoremap <Leader>s :SSave! <CR>
+let g:startify_change_to_vcs_root = 1
 
 " structure of start screen
 let g:startify_lists = [
