@@ -4,20 +4,21 @@
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'tweekmonster/startuptime.vim'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'Yggdroot/indentLine'                    " ==> indent guides
 Plug 'lukas-reineke/indent-blankline.nvim'
 
+Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
-Plug 'jkramer/vim-checkbox'
 Plug 'vimwiki/vimwiki'
-Plug 'ZacharyRizer/vim-slash'
 
 Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
@@ -29,9 +30,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
-Plug 'vim-airline/vim-airline'                 " ==> theme related plugins <==
 Plug 'ZacharyRizer/vim', { 'as': 'dracula' }
-Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
@@ -44,12 +43,10 @@ set clipboard=unnamedplus                 " Copy paste between vim and everythin
 set cmdheight=2                           " More space for displaying messages
 set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
 set expandtab                             " Converts tabs to spaces
-set foldexpr=nvim_treesitter#foldexpr()   " Folding decided by treesitter
-set foldlevelstart=100                    " Start unfolded
-set foldmethod=expr                       " Fold based on sytax
 set hidden                                " Required to keep multiple buffers open
 set ignorecase smartcase                  " Smart searching in regards to case
 set inccommand=nosplit                    " Interactive substitution
+set lazyredraw                            " Help with screen redraw lag
 set mouse=a                               " Enable your mouse
 set nobackup noswapfile nowritebackup     " This is recommended by coc
 set noerrorbells                          " Stop those annoying bells
@@ -57,12 +54,14 @@ set noshowmode                            " Airline takes care of showing modes
 set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
 set pumblend=15                           " Transparency for floating windows
-set scrolloff=5                           " 5 lines are above and below cursor
+set scrolloff=10                          " 10 lines are above and below cursor
 set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
+" set showtabline=2                         " Always show tabline
 set softtabstop=4 tabstop=4               " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
+set statusline=%!ActiveStatus()           " Turn on default status line
 set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
@@ -77,8 +76,8 @@ cnoreabbrev h vert h
 
 augroup AUTO_COMMANDS
     autocmd!
-    au BufWinEnter,FocusGained,VimEnter,WinEnter, * setlocal cursorline
-    au FocusLost,WinLeave * setlocal nocursorline
+    autocmd BufWinEnter,FocusGained,VimEnter,WinEnter, * setlocal cursorline
+    autocmd FocusLost,WinLeave * setlocal nocursorline
     autocmd BufEnter * set fo-=c fo-=r fo-=o
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
 augroup END
@@ -97,8 +96,12 @@ nnoremap K <nop>
 nnoremap Q <nop>
 nnoremap <Space> <nop>
 
-" easy word replace
+" easy word replace and */# searching stay in place
 nnoremap c* *Ncgn
+nnoremap *  *N
+nnoremap #  #N
+vnoremap *  y/\V<C-R>=escape(@",'/\')<CR><CR>N
+vnoremap #  y?\V<C-R>=escape(@",'/\')<CR><CR>N
 
 " better tabbing
 vnoremap < <gv
@@ -110,10 +113,6 @@ nnoremap > >>
 map Y y$
 vmap y y`>
 
-" easy comments
-nnoremap <space>/ :Commentary<cr>
-vnoremap <space>/ :Commentary<cr>
-
 " tab/buffer manipulation
 nnoremap <leader>d   :bd<cr>
 nnoremap <leader>dd  :bd!<cr>
@@ -122,20 +121,57 @@ nnoremap <S-TAB>     :bprevious<cr>
 nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
 
 " --------------------------------------------------------------------------- ==>
-" ----------------------------- Theme Config -------------------------------- ==>
+" ---------------------- Theme, StatusLine, TabLine ------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-" forked custome dracula
-colorscheme dracula
+colorscheme dracula     " ==> my fork of this theme
 
-" vim-airline tab and theme config
-let g:airline_powerline_fonts = 1
-let g:airline_inactive_collapse = 0
-let g:airline_section_y = ''
-let g:airline#extensions#tabline#fnamemod = ':t:r'
-let g:airline#extensions#tabline#ignore_bufadd_pat ='!|startify|undotree'
-let g:airline#extensions#tabline#show_tab_type = 0
-let g:airline_extensions = ['branch', 'coc', 'tabline', 'undotree']
+function! FileNames()
+    let specialFileNames = {'coc-explorer': 'Explorer', 'help': 'Help', 'startify': 'Startify', 'undotree': 'UndoTree'}
+    if (has_key(specialFileNames, &filetype))
+        return specialFileNames[&filetype]
+    else
+        return @%
+    endif
+endfunction
+
+function! ActiveStatus()
+    let statusline=""
+    hi User1 guibg=#BD93F9 guifg=#282A36 gui=bold
+    hi User2 guibg=#282A36 guifg=#BD93F9 gui=bold
+    hi User3 guibg=#424450 guifg=#282A36
+    hi User4 guibg=#424450 guifg=#F8F8F2
+    hi User5 guibg=#FF5555 guifg=#282A36 gui=bold
+    hi User6 guibg=#282A36 guifg=#FF5555 gui=bold
+    if (&filetype == 'coc-explorer' || &filetype == 'startify' || &filetype == 'undotree' )
+        let statusline.="%1*\ ﰆ\ %2*\ %{FileNames()}%3*%4*%="
+    elseif (&filetype == 'help')
+        let statusline.="%1*\ ﰆ\ %2*\ %{FileNames()}%3*%4*%=%3*\ %2*%3p%%\ 難\ %1*\ %2l/%L\ \ %2v\ "
+    else
+        if (&modified)
+            let statusline.="%5*\ ﰆ\ %6*%{fugitive#head()!=''?'\ \ '.fugitive#head().'\ ':''}%3*%4*\ %<%{FileNames()}"
+            let statusline.="%=\ %{coc#status()}\ %3*\ %6*%3p%%\ 難\ %5*\ %2l/%L\ \ %2v\ "
+        else 
+            let statusline.="%1*\ ﰆ\ %2*%{fugitive#head()!=''?'\ \ '.fugitive#head().'\ ':''}%3*%4*\ %<%{FileNames()}"
+            let statusline.="%=\ %{coc#status()}\ %3*\ %2*%3p%%\ 難\ %1*\ %2l/%L\ \ %2v\ "
+        endif
+
+    endif
+    return statusline
+
+endfunction
+
+function! InactiveStatus()
+    hi Modified guibg=#424450 guifg=#FF5555 gui=bold,italic
+    let statusline="%#Modified#%{&modified?'\ '.FileNames(): ''}%*%#StatusLineNC#%{&modified?'': '\ '.FileNames()}%=%*"
+    return statusline
+endfunction
+
+augroup status
+  autocmd!
+  autocmd BufWinEnter,WinEnter * setlocal statusline=%!ActiveStatus()
+  autocmd WinLeave * setlocal statusline=%!InactiveStatus()
+augroup END
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- plugin key mappings ---------------------------- ==>
@@ -166,23 +202,27 @@ EOF
 
 " Undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
-let g:undotree_DiffpanelHeight = 15
+let g:undotree_DiffAutoOpen = 0
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_SplitWidth = 40
 let g:undotree_WindowLayout = 3
 
-" Vim-Slash
-nmap <plug>(slash-after) zz
+" Vim-Commentary
+nnoremap <space>/ :Commentary<cr>
+vnoremap <space>/ :Commentary<cr>
 
 " Vim-RSI ==> disable meta-key bindings
 let g:rsi_no_meta = 1
 
 " VimWiki
+let g:vimwiki_global_ext = 0
 let g:vimwiki_hl_headers = 1
 let g:vimwiki_hl_cb_checked = 2
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_table_mappings = 0
 nmap <C-n> <Plug>VimwikiNextLink
 nmap <C-p> <Plug>VimwikiPrevLink
+au BufNewFile ~/vimwiki/diary/*.md :silent 0r !~/vimwiki/bin/generate-vimwiki-diary-template 
 
 " Yankstack
 nmap <A-n> <Plug>yankstack_substitute_newer_paste
@@ -205,6 +245,8 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+inoremap <silent><expr> <c-space> coc#refresh()
+
 " Show documentation
 nnoremap <silent>gh :call <SID>show_documentation()<CR>
 function! s:show_documentation()
@@ -220,7 +262,6 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn  <Plug>(coc-rename)
-nmap <leader>cs  :CocSearch <C-R>=expand("<cword>")<CR><CR>
 
 " Use `[d` and `]d` to navigate diagnostics
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
@@ -298,7 +339,6 @@ nnoremap <Leader><CR> :Startify<CR>
 nnoremap <C-s> :SSave!<CR>
 let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
-let g:startify_change_to_vcs_root = 1
 
 " structure of start screen
 let g:startify_lists = [
