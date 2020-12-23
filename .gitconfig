@@ -1,0 +1,17 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Zachary Rizer
+	email = zacharyrizer@gmail.com
+[core]
+	editor = nvim
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+	co = checkout
+	br = branch
+	s = status
+[init]
+	defaultBranch = main

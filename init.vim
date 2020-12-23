@@ -4,8 +4,6 @@
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'tweekmonster/startuptime.vim'
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'nvim-treesitter/nvim-treesitter'
@@ -25,11 +23,11 @@ Plug 'RyanMillerC/better-vim-tmux-resizer'
 Plug 'benmills/vimux'
 
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
+Plug '~/.config/nvim/statusline'
 Plug 'ZacharyRizer/vim', { 'as': 'dracula' }
 
 call plug#end()
@@ -43,6 +41,7 @@ set clipboard=unnamedplus                 " Copy paste between vim and everythin
 set cmdheight=2                           " More space for displaying messages
 set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
 set expandtab                             " Converts tabs to spaces
+set foldlevel=10                          " Start unfolded
 set hidden                                " Required to keep multiple buffers open
 set ignorecase smartcase                  " Smart searching in regards to case
 set inccommand=nosplit                    " Interactive substitution
@@ -57,8 +56,8 @@ set pumblend=15                           " Transparency for floating windows
 set scrolloff=10                          " 10 lines are above and below cursor
 set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
+set sidescrolloff=10                      " Keep 5 columns on either side of the cursor
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
-" set showtabline=2                         " Always show tabline
 set softtabstop=4 tabstop=4               " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set statusline=%!ActiveStatus()           " Turn on default status line
@@ -81,6 +80,8 @@ augroup AUTO_COMMANDS
     autocmd BufEnter * set fo-=c fo-=r fo-=o
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
 augroup END
+
+colorscheme dracula     " ==> my fork of this theme
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- Basic Key Mappings ----------------------------- ==>
@@ -113,76 +114,25 @@ nnoremap > >>
 map Y y$
 vmap y y`>
 
-" tab/buffer manipulation
+" easy buffer delete and close
 nnoremap <leader>d   :bd<cr>
 nnoremap <leader>dd  :bd!<cr>
-nnoremap <TAB>       :bnext<cr>
-nnoremap <S-TAB>     :bprevious<cr>
 nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
-
-" --------------------------------------------------------------------------- ==>
-" ---------------------- Theme, StatusLine, TabLine ------------------------- ==>
-" --------------------------------------------------------------------------- ==>
-
-colorscheme dracula     " ==> my fork of this theme
-
-function! FileNames()
-    let specialFileNames = {'coc-explorer': 'Explorer', 'help': 'Help', 'startify': 'Startify', 'undotree': 'UndoTree'}
-    if (has_key(specialFileNames, &filetype))
-        return specialFileNames[&filetype]
-    else
-        return @%
-    endif
-endfunction
-
-function! ActiveStatus()
-    let statusline=""
-    hi User1 guibg=#BD93F9 guifg=#282A36 gui=bold
-    hi User2 guibg=#282A36 guifg=#BD93F9 gui=bold
-    hi User3 guibg=#424450 guifg=#282A36
-    hi User4 guibg=#424450 guifg=#F8F8F2
-    hi User5 guibg=#FF5555 guifg=#282A36 gui=bold
-    hi User6 guibg=#282A36 guifg=#FF5555 gui=bold
-    if (&filetype == 'coc-explorer' || &filetype == 'startify' || &filetype == 'undotree' )
-        let statusline.="%1*\ ﰆ\ %2*\ %{FileNames()}%3*%4*%="
-    elseif (&filetype == 'help')
-        let statusline.="%1*\ ﰆ\ %2*\ %{FileNames()}%3*%4*%=%3*\ %2*%3p%%\ 難\ %1*\ %2l/%L\ \ %2v\ "
-    else
-        if (&modified)
-            let statusline.="%5*\ ﰆ\ %6*%{fugitive#head()!=''?'\ \ '.fugitive#head().'\ ':''}%3*%4*\ %<%{FileNames()}"
-            let statusline.="%=\ %{coc#status()}\ %3*\ %6*%3p%%\ 難\ %5*\ %2l/%L\ \ %2v\ "
-        else 
-            let statusline.="%1*\ ﰆ\ %2*%{fugitive#head()!=''?'\ \ '.fugitive#head().'\ ':''}%3*%4*\ %<%{FileNames()}"
-            let statusline.="%=\ %{coc#status()}\ %3*\ %2*%3p%%\ 難\ %1*\ %2l/%L\ \ %2v\ "
-        endif
-
-    endif
-    return statusline
-
-endfunction
-
-function! InactiveStatus()
-    hi Modified guibg=#424450 guifg=#FF5555 gui=bold,italic
-    let statusline="%#Modified#%{&modified?'\ '.FileNames(): ''}%*%#StatusLineNC#%{&modified?'': '\ '.FileNames()}%=%*"
-    return statusline
-endfunction
-
-augroup status
-  autocmd!
-  autocmd BufWinEnter,WinEnter * setlocal statusline=%!ActiveStatus()
-  autocmd WinLeave * setlocal statusline=%!InactiveStatus()
-augroup END
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- plugin key mappings ---------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
 " FZF setup
+let g:fzf_buffers_jump = 1
 let g:fzf_layout = {'window': { 'width': 0.9, 'height': 0.8 }}
-nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>c :Commands<CR>
 nnoremap <leader>f :Files<CR>
+nnoremap <leader>F :Files ~/
 nnoremap <leader>g :Rg<Space>
+nnoremap <leader>G :Rg<CR>
+nnoremap <leader>h :History<CR>
+nnoremap <leader>j :Buffers<CR> 
 command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
 
@@ -278,6 +228,10 @@ let g:coc_fzf_preview_toggle_key = 'ctrl-/'
 let g:coc_fzf_preview = 'down:50%'
 let g:coc_fzf_opts = []
 
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+nmap gs <Plug>(coc-git-chunkinfo)
+
 " ==> coc-pairs auto indent on enter
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
@@ -333,7 +287,7 @@ vmap <Leader>vs "vy :call VimuxSlime()<CR>
 " --------------------------------------------------------------------------- ==>
 
 " if all buffers are closed, open Startify
-autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
+autocmd BufEnter * if line2byte('.') == -1 && len(tabpagebuflist()) == 1 | Startify | endif
 
 nnoremap <Leader><CR> :Startify<CR>
 nnoremap <C-s> :SSave!<CR>

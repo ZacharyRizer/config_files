@@ -1,6 +1,6 @@
 {
     "clangd.path": "/usr/local/Cellar/llvm/10.0.0_3/bin/clangd",
-    "clangd.semanticHighlighting": true,
+    "coc.preferences.extensionUpdateCheck": "daily",
     "coc.preferences.formatOnSaveFiletypes": [
         "cpp",
         "css",
@@ -12,14 +12,32 @@
         "typescript"
     ],
     "coc.preferences.formatOnType": true,
-    "explorer.width": 35,
+    "diagnostic.errorSign": "✘",
+    "diagnostic.infoSign": "⚠",
     "explorer.icon.enableNerdfont": true,
+    "explorer.position": "right",
     "explorer.previewAction.onHover": false,
+    "explorer.quitOnOpen": true,
     "explorer.keyMappings.global": {
-        "v": "open:vsplit"
+        "<tab>": "<nop>",
+        "<C-x>": "open:split",
+        "<C-v>": "open:vsplit",
+        "gh": "preview:content",
+        "D": "delete",
+        ".": "toggleHidden"
     },
+    "explorer.width": 40,
+    "git.changedDecorator": " !",
+    "git.conflictedDecorator": " ✘",
+    "git.stagedDecorator": " +",
+    "git.untrackedDecorator": " ?",
     "html.autoClosingTags": true,
+    "list.insertMappings": {
+        "<C-n>": "normal:j",
+        "<C-p>": "normal:k"
+    },
+    "markdownlint.config": { "line_length": false },
     "prettier.tabWidth": 4,
-    "python.jediEnabled": false,
-    "yank.list.maxsize": 50
+    "prettier.printWidth": 100,
+    "python.jediEnabled": false
 }

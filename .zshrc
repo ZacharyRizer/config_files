@@ -1,7 +1,3 @@
-# Set Starship as a prompt
-eval "$(starship init zsh)"
-
-# Save history so we get auto suggestions
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
 HISTFILE=$HOME/.zsh_history
@@ -36,14 +32,14 @@ alias rm="rm -i"
 alias lzg="lazygit"
 alias lzd="lazydocker"
 alias ipy="ipython"
-alias tx="tmux a"
+alias t="tmux a"
 tr() { tree -L "$1" }
 code() {
    open -a Visual\ Studio\ Code.app $1
 }
 
 # Put Homebrew's sbin in path
-export PATH="/usr/local/sbin:$PATH"
+path+=("/usr/local/sbin")
 
 # -------------------------==> FZF settings <== ------------------------------#
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -64,23 +60,23 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # -------------------------==> nvm settings <== ------------------------------#
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # ----------------------------------------------------------------------------#
 
 
 # -----------------------==> conda initialize <== ----------------------------#
-__conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/proton/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/proton/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/proton/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
+# __conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/Users/proton/miniconda3/etc/profile.d/conda.sh" ]; then
+#         . "/Users/proton/miniconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/Users/proton/miniconda3/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
 # ----------------------------------------------------------------------------#
 
 # use the ipython debugger rather than standard pdb
@@ -96,6 +92,8 @@ export PYENV_ROOT=$HOME/.pyenv
 export PATH="$PYENV_ROOT/shims:$PATH"
 # ----------------------------------------------------------------------------#
 
+# Set Starship as a prompt
+eval "$(starship init zsh)"
 
 # ZSH Packages
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
