@@ -29,8 +29,7 @@ export VISUAL="$EDITOR"
 # Aliases
 alias g++="g++ -std=c++17 -Wall"
 alias rm="rm -i"
-alias lzg="lazygit"
-alias lzd="lazydocker"
+alias lg="lazygit"
 alias ipy="ipython"
 alias t="tmux a"
 tr() { tree -L "$1" }
