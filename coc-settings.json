@@ -14,8 +14,11 @@
     "coc.preferences.formatOnType": true,
     "diagnostic.errorSign": "✘",
     "diagnostic.infoSign": "⚠",
+    "explorer.floating.height": -1,
+    "explorer.floating.position": "right-center",
+    "explorer.floating.width": 50,
     "explorer.icon.enableNerdfont": true,
-    "explorer.position": "right",
+    "explorer.position": "floating",
     "explorer.previewAction.onHover": false,
     "explorer.quitOnOpen": true,
     "explorer.keyMappings.global": {

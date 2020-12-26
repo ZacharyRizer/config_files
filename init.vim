@@ -27,7 +27,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
-Plug '~/.config/nvim/statusline'
+Plug 'ZacharyRizer/statusline', {'branch': 'main'}
 Plug 'ZacharyRizer/vim', { 'as': 'dracula' }
 
 call plug#end()
@@ -60,7 +60,6 @@ set sidescrolloff=10                      " Keep 5 columns on either side of the
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
 set softtabstop=4 tabstop=4               " Insert 4 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
-set statusline=%!ActiveStatus()           " Turn on default status line
 set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
 set undodir=~/.vim/undodir                " Creates directory to store undos
@@ -79,6 +78,7 @@ augroup AUTO_COMMANDS
     autocmd FocusLost,WinLeave * setlocal nocursorline
     autocmd BufEnter * set fo-=c fo-=r fo-=o
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
+    autocmd VimResized * :wincmd =
 augroup END
 
 colorscheme dracula     " ==> my fork of this theme
@@ -110,7 +110,7 @@ vnoremap > >gv
 nnoremap < <<
 nnoremap > >>
 
-" better yanking
+" more intuitive yanking
 map Y y$
 vmap y y`>
 
@@ -266,14 +266,13 @@ nnoremap <silent> <A-j> :TmuxResizeDown<cr>
 nnoremap <silent> <A-k> :TmuxResizeUp<cr>
 nnoremap <silent> <A-l> :TmuxResizeRight<cr>
 
-" close current split for both Tmux and Vim
-nnoremap <A-d> <C-w>c
-
 " ---------------------------- ==> Vimux <== -------------------------------- "
+
 let g:VimuxOrientation = "h"
-let g:VimuxHeight = "30"
+let g:VimuxHeight = "35"
 map <Leader>vp :VimuxPromptCommand<CR>
 map <Leader>vl :w<CR> <bar> :VimuxRunLastCommand<CR>
+map <Leader>vz :VimuxZoomRunner<CR>
 
 " If text is selected, save it in the v buffer and send that buffer it to tmux
 function! VimuxSlime()
