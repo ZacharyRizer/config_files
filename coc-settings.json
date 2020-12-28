@@ -12,8 +12,6 @@
         "typescript"
     ],
     "coc.preferences.formatOnType": true,
-    "diagnostic.errorSign": "✘",
-    "diagnostic.infoSign": "⚠",
     "explorer.floating.height": -1,
     "explorer.floating.position": "right-center",
     "explorer.floating.width": 50,

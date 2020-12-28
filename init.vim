@@ -6,9 +6,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'Yggdroot/indentLine'                    " ==> indent guides
-Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -28,7 +26,7 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
 Plug 'ZacharyRizer/statusline', {'branch': 'main'}
-Plug 'ZacharyRizer/vim', { 'as': 'dracula' }
+Plug 'ZacharyRizer/my_dracula'
 
 call plug#end()
 
@@ -41,11 +39,12 @@ set clipboard=unnamedplus                 " Copy paste between vim and everythin
 set cmdheight=2                           " More space for displaying messages
 set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
 set expandtab                             " Converts tabs to spaces
-set foldlevel=10                          " Start unfolded
 set hidden                                " Required to keep multiple buffers open
 set ignorecase smartcase                  " Smart searching in regards to case
 set inccommand=nosplit                    " Interactive substitution
 set lazyredraw                            " Help with screen redraw lag
+set list                                  " Show invisible characters
+set list listchars=tab:\|.,trail:·,precedes:<,extends:>,eol:↲,nbsp:␣
 set mouse=a                               " Enable your mouse
 set nobackup noswapfile nowritebackup     " This is recommended by coc
 set noerrorbells                          " Stop those annoying bells
@@ -136,19 +135,8 @@ nnoremap <leader>j :Buffers<CR>
 command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
 
-" Indent Guide settings
-let g:indent_blankline_char = "│"
-let g:indent_blankline_extra_indent_level = -1
-let g:indentLine_char = "│"
-let g:indentLine_fileType = ['cs', 'css', 'cpp', 'html', 'javascript', 'json', 'python', 'typescript']
-
 " Treesitter setup for highlight
-lua << EOF
-    require'nvim-treesitter.configs'.setup {
-      ensure_installed = "maintained",
-      highlight = { enable = true },
-    }
-EOF
+lua require'nvim-treesitter.configs'.setup { ensure_installed = "maintained", highlight = { enable = true } }
 
 " Undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -284,9 +272,6 @@ vmap <Leader>vs "vy :call VimuxSlime()<CR>
 " --------------------------------------------------------------------------- ==>
 " ---------------------------- Startify Config ------------------------------ ==>
 " --------------------------------------------------------------------------- ==>
-
-" if all buffers are closed, open Startify
-autocmd BufEnter * if line2byte('.') == -1 && len(tabpagebuflist()) == 1 | Startify | endif
 
 nnoremap <Leader><CR> :Startify<CR>
 nnoremap <C-s> :SSave!<CR>
