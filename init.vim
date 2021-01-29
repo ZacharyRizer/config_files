@@ -11,7 +11,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'vimwiki/vimwiki'
@@ -27,14 +26,15 @@ Plug 'tpope/vim-surround'
 
 Plug 'ZacharyRizer/statusline', {'branch': 'main'}
 Plug 'ZacharyRizer/my_dracula'
+Plug 'ZacharyRizer/vim-yankstack'
 
 call plug#end()
+call yankstack#setup()
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- General Settings ------------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-call yankstack#setup()                    " this has to be called before set clipboard
 set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set cmdheight=2                           " More space for displaying messages
 set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
@@ -43,8 +43,7 @@ set hidden                                " Required to keep multiple buffers op
 set ignorecase smartcase                  " Smart searching in regards to case
 set inccommand=nosplit                    " Interactive substitution
 set lazyredraw                            " Help with screen redraw lag
-set list                                  " Show invisible characters
-set list listchars=tab:\|.,trail:·,precedes:<,extends:>,eol:↲,nbsp:␣
+set listchars=tab:»\ ,trail:·,precedes:<,extends:>,eol:↲,nbsp:␣
 set mouse=a                               " Enable your mouse
 set nobackup noswapfile nowritebackup     " This is recommended by coc
 set noerrorbells                          " Stop those annoying bells
@@ -53,11 +52,10 @@ set nowrap                                " Display long lines as just one line
 set number relativenumber                 " Line numbers
 set pumblend=15                           " Transparency for floating windows
 set scrolloff=10                          " 10 lines are above and below cursor
-set shiftwidth=4                          " Change the number of space characters inserted for indentation
 set shortmess+=c                          " Don't pass messages to |ins-completion-menu|.
 set sidescrolloff=10                      " Keep 5 columns on either side of the cursor
 set signcolumn=yes                        " So error/git diagnostics don't cause a column shift
-set softtabstop=4 tabstop=4               " Insert 4 spaces for a tab
+set shiftwidth=2 softtabstop=2 tabstop=2  " Insert 2 spaces for a tab
 set splitbelow splitright                 " Splits will automatically be below and to the right
 set termguicolors                         " Enable gui colors
 set timeoutlen=250                        " By default timeoutlen is 1000 ms
@@ -76,8 +74,17 @@ augroup AUTO_COMMANDS
     autocmd BufWinEnter,FocusGained,VimEnter,WinEnter, * setlocal cursorline
     autocmd FocusLost,WinLeave * setlocal nocursorline
     autocmd BufEnter * set fo-=c fo-=r fo-=o
+    autocmd BufNewFile ~/vimwiki/diary/*.md :silent 0r !~/vimwiki/bin/generate-vimwiki-diary-template
+    autocmd BufWritePre * %s/\s\+$//e
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 350})
     autocmd VimResized * :wincmd =
+augroup END
+
+augroup FileSpecifics
+    autocmd!
+    autocmd FileType go setlocal shiftwidth=4 softtabstop=4 tabstop=4
+    autocmd FileType haskell setlocal shiftwidth=4 softtabstop=4 tabstop=4
+    autocmd FileType python setlocal shiftwidth=4 softtabstop 4 tabstop=4
 augroup END
 
 colorscheme dracula     " ==> my fork of this theme
@@ -130,13 +137,13 @@ nnoremap <leader>f :Files<CR>
 nnoremap <leader>F :Files ~/
 nnoremap <leader>g :Rg<Space>
 nnoremap <leader>G :Rg<CR>
-nnoremap <leader>h :History<CR>
-nnoremap <leader>j :Buffers<CR> 
+nnoremap <leader>h :Buffers<CR>
+nnoremap <leader>H :History<CR>
 command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
 
 " Treesitter setup for highlight
-lua require'nvim-treesitter.configs'.setup { ensure_installed = "maintained", highlight = { enable = true } }
+lua require'nvim-treesitter.configs'.setup { ensure_installed = "all", highlight = { enable = true } }
 
 " Undo tree
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -160,12 +167,6 @@ let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}
 let g:vimwiki_table_mappings = 0
 nmap <C-n> <Plug>VimwikiNextLink
 nmap <C-p> <Plug>VimwikiPrevLink
-au BufNewFile ~/vimwiki/diary/*.md :silent 0r !~/vimwiki/bin/generate-vimwiki-diary-template 
-
-" Yankstack
-nmap <A-n> <Plug>yankstack_substitute_newer_paste
-imap <A-n> <Plug>yankstack_substitute_newer_paste
-vmap <A-n> <Plug>yankstack_substitute_newer_paste
 
 " --------------------------------------------------------------------------- ==>
 " ------------------------------ COC Config --------------------------------- ==>
@@ -208,14 +209,16 @@ nmap <silent> ]d <Plug>(coc-diagnostic-next)
 " ==> coc-explorer
 nmap <C-e> :CocCommand explorer<CR>
 
-" ==> coc-fzf -- 'list-diagnostics' & 'list-symbols'
-nnoremap <Leader>la :<C-u>CocFzfList actions<CR>
-nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
-nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
+" ==> coc-fzf
 let g:coc_fzf_preview_toggle_key = 'ctrl-/'
 let g:coc_fzf_preview = 'down:50%'
 let g:coc_fzf_opts = []
+nnoremap <Leader>la :<C-u>CocFzfList actions<CR>
+nnoremap <Leader>lc :<C-u>CocFzfList commands<CR>
+nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
+nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
 
+" ==> coc-git
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
 nmap gs <Plug>(coc-git-chunkinfo)
@@ -274,7 +277,6 @@ vmap <Leader>vs "vy :call VimuxSlime()<CR>
 " --------------------------------------------------------------------------- ==>
 
 nnoremap <Leader><CR> :Startify<CR>
-nnoremap <C-s> :SSave!<CR>
 let g:startify_session_dir = '~/.config/nvim/session'
 let g:startify_session_persistence = 1
 

@@ -1,44 +1,56 @@
 {
-    "clangd.path": "/usr/local/Cellar/llvm/10.0.0_3/bin/clangd",
-    "coc.preferences.extensionUpdateCheck": "daily",
-    "coc.preferences.formatOnSaveFiletypes": [
-        "cpp",
-        "css",
-        "cs",
-        "javascript",
-        "html",
-        "json",
-        "python",
-        "typescript"
-    ],
-    "coc.preferences.formatOnType": true,
-    "explorer.floating.height": -1,
-    "explorer.floating.position": "right-center",
-    "explorer.floating.width": 50,
-    "explorer.icon.enableNerdfont": true,
-    "explorer.position": "floating",
-    "explorer.previewAction.onHover": false,
-    "explorer.quitOnOpen": true,
-    "explorer.keyMappings.global": {
-        "<tab>": "<nop>",
-        "<C-x>": "open:split",
-        "<C-v>": "open:vsplit",
-        "gh": "preview:content",
-        "D": "delete",
-        ".": "toggleHidden"
-    },
-    "explorer.width": 40,
-    "git.changedDecorator": " !",
-    "git.conflictedDecorator": " ✘",
-    "git.stagedDecorator": " +",
-    "git.untrackedDecorator": " ?",
-    "html.autoClosingTags": true,
-    "list.insertMappings": {
-        "<C-n>": "normal:j",
-        "<C-p>": "normal:k"
-    },
-    "markdownlint.config": { "line_length": false },
-    "prettier.tabWidth": 4,
-    "prettier.printWidth": 100,
-    "python.jediEnabled": false
+  "clangd.path": "/usr/local/Cellar/llvm/10.0.0_3/bin/clangd",
+  "coc.preferences.extensionUpdateCheck": "daily",
+  "coc.preferences.formatOnSaveFiletypes": [
+    "cpp",
+    "css",
+    "cs",
+    "go",
+    "javascript",
+    "javascriptreact",
+    "haskell",
+    "html",
+    "json",
+    "markdown",
+    "python",
+    "scss",
+    "typescript"
+  ],
+  "emmet.includeLanguages": { "javascript": "javascriptreact" },
+  "explorer.icon.enableNerdfont": true,
+  "explorer.position": "right",
+  "explorer.previewAction.onHover": false,
+  "explorer.quitOnOpen": true,
+  "explorer.keyMappings.global": {
+    "<tab>": "<nop>",
+    "<C-x>": "open:split",
+    "<C-v>": "open:vsplit",
+    "gh": "preview:content",
+    "D": "delete",
+    ".": "toggleHidden"
+  },
+  "explorer.width": 40,
+  "git.changedDecorator": " !",
+  "git.conflictedDecorator": " ✘",
+  "git.stagedDecorator": " +",
+  "git.untrackedDecorator": " ?",
+  "go.goplsOptions": {
+    "completeUnimported": true
+  },
+  "html.autoClosingTags": true,
+  "languageserver": {
+    "haskell": {
+      "command": "haskell-language-server-wrapper",
+      "args": ["--lsp"],
+      "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"],
+      "filetypes": ["haskell", "lhaskell"]
+    }
+  },
+  "list.insertMappings": {
+    "<C-n>": "normal:j",
+    "<C-p>": "normal:k"
+  },
+  "prettier.tabWidth": 2,
+  "prettier.printWidth": 100,
+  "python.jediEnabled": false
 }
