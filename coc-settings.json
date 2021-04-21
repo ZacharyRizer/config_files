@@ -1,4 +1,5 @@
 {
+  "angular.experimental-ivy": true,
   "clangd.path": "/usr/local/Cellar/llvm/10.0.0_3/bin/clangd",
   "coc.preferences.extensionUpdateCheck": "daily",
   "coc.preferences.formatOnSaveFiletypes": [

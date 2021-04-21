@@ -6,6 +6,11 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
+
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 Plug 'airblade/vim-rooter'
@@ -132,15 +137,27 @@ nnoremap <leader>wo  :%bd <bar> e# <bar> normal `" <cr>
 " FZF setup
 let g:fzf_buffers_jump = 1
 let g:fzf_layout = {'window': { 'width': 0.9, 'height': 0.8 }}
-nnoremap <leader>c :Commands<CR>
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>F :Files ~/
-nnoremap <leader>g :Rg<Space>
-nnoremap <leader>G :Rg<CR>
-nnoremap <leader>h :Buffers<CR>
-nnoremap <leader>H :History<CR>
 command! -bang -nargs=? -complete=dir Files
             \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
+
+" Telescope
+nnoremap <Leader>c :lua require('telescope.builtin').commands()<CR>
+nnoremap <Leader>f :lua require('telescope.builtin').find_files()<CR>
+nnoremap <Leader>g :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ")})<CR>
+nnoremap <Leader>G :lua require('telescope.builtin').live_grep()<CR>
+nnoremap <Leader>h :lua require('telescope.builtin').buffers()<CR>
+nnoremap <Leader>H :lua require('telescope.builtin').oldfiles()<CR>
+
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    prompt_position = "top",
+    sorting_strategy = "ascending",
+    width = 0.85,
+  }
+}
+require('telescope').load_extension('fzy_native')
+EOF
 
 " Treesitter setup for highlight
 lua require'nvim-treesitter.configs'.setup { ensure_installed = "all", highlight = { enable = true } }
@@ -217,6 +234,7 @@ nnoremap <Leader>la :<C-u>CocFzfList actions<CR>
 nnoremap <Leader>lc :<C-u>CocFzfList commands<CR>
 nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
 nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
+
 
 " ==> coc-git
 nmap [g <Plug>(coc-git-prevchunk)
