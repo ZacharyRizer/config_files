@@ -28,9 +28,10 @@ export VISUAL="$EDITOR"
 
 # Aliases
 alias g++="g++ -std=c++17 -Wall"
-alias rm="rm -i"
-alias lg="lazygit"
 alias ipy="ipython"
+alias json="python -m json.tool"
+alias lg="lazygit"
+alias rm="rm -i"
 alias t="tmux a"
 tr() { tree -L "$1" }
 code() {
@@ -54,22 +55,6 @@ export FZF_DEFAULT_OPTS="
 #   ([[ -d {} ]] && (tree -C {} | less)) || echo {} 3> /dev/null | head -200'
 export FZF_DEFAULT_COMMAND="fd --hidden -E '.git' -E '.venv' -E 'node_modules'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# ----------------------------------------------------------------------------#
-
-
-# -----------------------==> conda initialize <== ----------------------------#
-# __conda_setup="$('/Users/proton/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "/Users/proton/miniconda3/etc/profile.d/conda.sh" ]; then
-#         . "/Users/proton/miniconda3/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/Users/proton/miniconda3/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
-# ----------------------------------------------------------------------------#
 
 # use the ipython debugger rather than standard pdb
 export PYTHONBREAKPOINT=ipdb.set_trace
@@ -82,15 +67,21 @@ fi
 export PIPENV_VENV_IN_PROJECT=1
 export PYENV_ROOT=$HOME/.pyenv
 export PATH="$PYENV_ROOT/shims:$PATH"
-# ----------------------------------------------------------------------------#
 
 
 # -------------------------==> nvm settings <== ------------------------------#
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-# ----------------------------------------------------------------------------#
 
+
+# -------------------------==> ghc settings <== ------------------------------#
+[ -f "/Users/proton/.ghcup/env" ] && source "/Users/proton/.ghcup/env" # ghcup-env
+
+
+# --------------------------==> GO settings <== ------------------------------#
+export PATH=$PATH:$(go env GOPATH)/bin
+export GOPATH=$(go env GOPATH)
 
 # Set Starship as a prompt
 eval "$(starship init zsh)"
