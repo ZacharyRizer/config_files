@@ -2,6 +2,7 @@
 [user]
 	name = ZacharyRizer
 	email = zacharyrizer@gmail.com
+    token = 7fd28a6136fa45e2661a0ff5e1fbcf0aa95552ee
 [core]
 	editor = nvim
 [filter "lfs"]
