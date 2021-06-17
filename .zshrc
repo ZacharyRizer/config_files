@@ -19,7 +19,6 @@ unsetopt correct_all        # autocorrect commands
 unsetopt BEEP               # no beep sounds
 bindkey -e                  # emacs keybinds
 
-
 # basic exports
 export CLICOLOR=1
 export EDITOR="nvim"
@@ -60,10 +59,6 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export PYTHONBREAKPOINT=ipdb.set_trace
 
 # -----------------------==> pyenv initialize <== ----------------------------#
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init - --no-rehash)"
-fi
-
 export PIPENV_VENV_IN_PROJECT=1
 export PYENV_ROOT=$HOME/.pyenv
 export PATH="$PYENV_ROOT/shims:$PATH"

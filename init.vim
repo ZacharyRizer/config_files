@@ -5,12 +5,16 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'antoinemadec/coc-fzf'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'kyazdani42/nvim-web-devicons'
+
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim', {'do': 'make'}
+Plug 'fannheyward/telescope-coc.nvim'
 
 Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'vimwiki/vimwiki'
@@ -102,13 +106,15 @@ nnoremap <leader>` :source $MYVIMRC<CR>
 nnoremap K <nop>
 nnoremap Q <nop>
 nnoremap <Space> <nop>
+nnoremap <Backspace> <nop>
 
-" easy word replace and */# searching stay in place
+" easy word replace, search/replace, and */# searching stay in place
 nnoremap c* *Ncgn
 nnoremap *  *N
 nnoremap #  #N
 vnoremap *  y/\V<C-R>=escape(@",'/\')<CR><CR>N
 vnoremap #  y?\V<C-R>=escape(@",'/\')<CR><CR>N
+nnoremap <leader>s :%s/
 
 " better tabbing
 vnoremap < <gv
@@ -142,20 +148,41 @@ endfun
 " -------------------------- plugin key mappings ---------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-" FZF setup
-let g:fzf_buffers_jump = 1
-let g:fzf_layout = {'window': { 'width': 0.85, 'height': 0.8 }}
-nnoremap <leader>c :Commands<CR>
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>F :Files ~/
-nnoremap <leader>g :Rg<Space>
-nnoremap <leader>G :Rg<CR>
-nnoremap <leader>h :Buffers<CR>
-nnoremap <leader>H :History<CR>
-command! -bang -nargs=? -complete=dir Files
-            \ call fzf#vim#files(<q-args>, {'options': ['--preview', '([[ -f {} ]] && (bat --style=numbers --color=always {} )) || ([[ -d {} ]] && (tree -C {} | less))']}, <bang>0)
+" ==> Telescope setup
+lua << EOF
+local actions = require('telescope.actions')
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = {"main.*", "spec.*"},
+    layout_defaults = { horizontal = { preview_width = 0.5 }},
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close,
+        ["<c-t>"] = actions.toggle_selection,
+        ["<c-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+        ["<c-j>"] = actions.move_selection_next,
+        ["<c-k>"] = actions.move_selection_previous,
+      },
+    },
+    prompt_position = "top",
+    sorting_strategy = "ascending",
+  }
+}
+require('telescope').load_extension('coc')
+require('telescope').load_extension('fzy_native')
+EOF
 
-" Treesitter setup for highlight
+nnoremap <leader>c <cmd>lua require('telescope.builtin').commands()<cr>
+nnoremap <leader>C <cmd>lua require('telescope.builtin').command_history()<cr>
+nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files({ cwd = vim.fn.input("Find In Dir: ", "~/")})<cr>
+nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ")})<cr>
+nnoremap <leader>h <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>H <cmd>lua require('telescope.builtin').oldfiles()<cr>
+nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
+nnoremap <C-_> <cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>
+
+" ==> Treesitter setup
 lua << EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
@@ -223,11 +250,14 @@ function! s:show_documentation()
 endfunction
 
 " GoTo code navigation.
-nnoremap <silent><nowait> <leader>gd :call CocAction('jumpDefinition', v:false)<CR>
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gd <cmd>Telescope coc definitions<cr>
+nmap <silent> gi <cmd>Telescope coc implementations<cr>
+nmap <silent> gr <cmd>Telescope coc references<cr>
+nmap <silent> ga <cmd>Telescope coc file_code_actions<cr>
 nmap <leader>rn  <Plug>(coc-rename)
+nnoremap <Leader>lc <cmd>Telescope coc commands<cr>
+nnoremap <Leader>ld <cmd>Telescope coc diagnostics<cr>
+nnoremap <Leader>ls <cmd>Telescope coc document_symbols<cr>
 
 " Use `[d` and `]d` to navigate diagnostics
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
@@ -238,15 +268,6 @@ nnoremap <C-s> :CocSearch<space>
 
 " ==> coc-explorer
 nmap <C-e> :CocCommand explorer<CR>
-
-" ==> coc-fzf
-let g:coc_fzf_preview_toggle_key = 'ctrl-/'
-let g:coc_fzf_preview = 'down:70%'
-let g:coc_fzf_opts = []
-nnoremap <Leader>la :<C-u>CocFzfList actions<CR>
-nnoremap <Leader>lc :<C-u>CocFzfList commands<CR>
-nnoremap <Leader>ld :<C-u>CocFzfList diagnostics --current-buf<CR>
-nnoremap <Leader>ls :<C-u>CocFzfList outline<CR>
 
 " ==> coc-git
 nmap [g <Plug>(coc-git-prevchunk)
@@ -320,6 +341,7 @@ let g:startify_lists = [
 " few common files
 let g:startify_bookmarks = [
             \ { 'c': '~/.config/nvim/coc-settings.json' },
+            \ { 'h': '~/.hammerspoon/init.lua' },
             \ { 'i': '~/.config/nvim/init.vim' },
             \ { 't': '~/.tmux.conf' },
             \ { 'z': '~/.zshrc' }
