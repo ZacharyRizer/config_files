@@ -179,6 +179,7 @@ nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files({ cwd = vim.
 nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ")})<cr>
 nnoremap <leader>h <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>H <cmd>lua require('telescope.builtin').oldfiles()<cr>
+nnoremap <leader>m <cmd>lua require('telescope.builtin').keymaps()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
 nnoremap <C-_> <cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>
 
