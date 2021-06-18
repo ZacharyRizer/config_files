@@ -4,7 +4,6 @@
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'kyazdani42/nvim-web-devicons'
 
@@ -17,7 +16,9 @@ Plug 'fannheyward/telescope-coc.nvim'
 Plug 'airblade/vim-rooter'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vimwiki/vimwiki'
+Plug 'voldikss/vim-floaterm'
 
 Plug 'christoomey/vim-tmux-navigator'         " ==> Tmux-Vim integration <==
 Plug 'RyanMillerC/better-vim-tmux-resizer'
@@ -100,7 +101,7 @@ colorscheme dracula     " ==> my fork of this theme
 let g:mapleader = " "
 inoremap <C-c> <Esc>
 nnoremap <C-c> :nohl<CR>
-nnoremap <leader>` :source $MYVIMRC<CR>
+nnoremap <leader>` :source $MYVIMRC<CR> :PlugUpdate<CR>
 
 " unmapping a few keys that annoy me
 nnoremap K <nop>
@@ -147,6 +148,9 @@ endfun
 " --------------------------------------------------------------------------- ==>
 " -------------------------- plugin key mappings ---------------------------- ==>
 " --------------------------------------------------------------------------- ==>
+
+" Floaterm
+nnoremap <leader>t <cmd>FloatermNew --height=0.95 --width=0.85 --autoclose=2 --title=LazyGit lazygit<cr>
 
 " ==> Telescope setup
 lua << EOF
@@ -254,11 +258,11 @@ endfunction
 nmap <silent> gd <cmd>Telescope coc definitions<cr>
 nmap <silent> gi <cmd>Telescope coc implementations<cr>
 nmap <silent> gr <cmd>Telescope coc references<cr>
+nmap <silent> ge <cmd>Telescope coc diagnostics<cr>
+nmap <silent> gs <cmd>Telescope coc document_symbols<cr>
 nmap <silent> ga <cmd>Telescope coc file_code_actions<cr>
 nmap <leader>rn  <Plug>(coc-rename)
-nnoremap <Leader>lc <cmd>Telescope coc commands<cr>
 nnoremap <Leader>ld <cmd>Telescope coc diagnostics<cr>
-nnoremap <Leader>ls <cmd>Telescope coc document_symbols<cr>
 
 " Use `[d` and `]d` to navigate diagnostics
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
@@ -273,7 +277,6 @@ nmap <C-e> :CocCommand explorer<CR>
 " ==> coc-git
 nmap [g <Plug>(coc-git-prevchunk)
 nmap ]g <Plug>(coc-git-nextchunk)
-nmap gs <Plug>(coc-git-chunkinfo)
 
 " ==> coc-pairs auto indent on enter
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
