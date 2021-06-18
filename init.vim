@@ -4,16 +4,15 @@
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'kyazdani42/nvim-web-devicons'
-
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim', {'do': 'make'}
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'fannheyward/telescope-coc.nvim'
 
 Plug 'airblade/vim-rooter'
+Plug 'justinmk/vim-sneak'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -29,18 +28,16 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-surround'
 
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ZacharyRizer/statusline', {'branch': 'main'}
 Plug 'ZacharyRizer/my_dracula'
-Plug 'ZacharyRizer/vim-yankstack'
 
 call plug#end()
-call yankstack#setup()
 
 " --------------------------------------------------------------------------- ==>
 " -------------------------- General Settings ------------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
-set clipboard=unnamedplus                 " Copy paste between vim and everything else
 set cmdheight=2                           " More space for displaying messages
 set completeopt=menuone,noinsert,noselect " Hanldes how the completion menus function
 set expandtab                             " Converts tabs to spaces
@@ -98,6 +95,7 @@ colorscheme dracula     " ==> my fork of this theme
 " -------------------------- Basic Key Mappings ----------------------------- ==>
 " --------------------------------------------------------------------------- ==>
 
+nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
 let g:mapleader = " "
 inoremap <C-c> <Esc>
 nnoremap <C-c> :nohl<CR>
@@ -126,6 +124,8 @@ nnoremap > >>
 " more intuitive yanking
 map Y y$
 vmap y y`>
+nmap <leader>p "0p
+nmap <leader>P "0P
 
 " easy buffer delete and close
 nnoremap <leader>d   :bd<cr>
@@ -151,6 +151,13 @@ endfun
 
 " Floaterm
 nnoremap <leader>t <cmd>FloatermNew --height=0.95 --width=0.85 --autoclose=2 --title=LazyGit lazygit<cr>
+
+" Sneak
+let g:sneak#label = 1
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
 
 " ==> Telescope setup
 lua << EOF
@@ -178,13 +185,14 @@ EOF
 
 nnoremap <leader>c <cmd>lua require('telescope.builtin').commands()<cr>
 nnoremap <leader>C <cmd>lua require('telescope.builtin').command_history()<cr>
+nnoremap <leader>e <cmd>lua require('telescope.builtin').file_browser({cwd = vim.fn.expand('%:p:h')})<cr>
 nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files({ cwd = vim.fn.input("Find In Dir: ", "~/")})<cr>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ")})<cr>
 nnoremap <leader>h <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>H <cmd>lua require('telescope.builtin').oldfiles()<cr>
-nnoremap <leader>m <cmd>lua require('telescope.builtin').keymaps()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
+nnoremap <leader>r <cmd>lua require('telescope.builtin').registers()<cr>
 nnoremap <C-_> <cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>
 
 " ==> Treesitter setup
